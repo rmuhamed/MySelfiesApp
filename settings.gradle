@@ -1,0 +1,2 @@
+rootProject.name='MySelfiesApp'
+include ':app'
