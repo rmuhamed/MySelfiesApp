@@ -1,4 +1,4 @@
-package com.rmuhamed.sample.galleryapp
+package com.rmuhamed.sample.myselfiesapp.camera
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -16,19 +16,19 @@ import android.widget.Toast
 import androidx.camera.core.*
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import kotlinx.android.synthetic.main.activity_main.*
+import com.rmuhamed.sample.myselfiesapp.R
 import java.io.File
 
 private const val REQUEST_CODE_PERMISSIONS = 10
 
 private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
 
-class MainActivity : AppCompatActivity() {
+class CameraActivity : AppCompatActivity() {
     private lateinit var viewFinder: TextureView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_camera)
 
         viewFinder = findViewById(R.id.view_finder)
 
@@ -36,7 +36,10 @@ class MainActivity : AppCompatActivity() {
             viewFinder.post { startCamera() }
         } else {
             ActivityCompat.requestPermissions(
-                this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS)
+                this,
+                REQUIRED_PERMISSIONS,
+                REQUEST_CODE_PERMISSIONS
+            )
         }
 
         // Every time the provided texture view changes, recompute layout

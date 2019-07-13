@@ -1,4 +1,4 @@
-package com.rmuhamed.sample.galleryapp
+package com.rmuhamed.sample.myselfiesapp
 
 import org.junit.Test
 
