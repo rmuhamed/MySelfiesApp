@@ -28,6 +28,10 @@
 
         <activity android:name=".camera.CameraActivity"
             android:screenOrientation="portrait"/>
+
+        <activity
+            android:name=".gallery.GalleryActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>
