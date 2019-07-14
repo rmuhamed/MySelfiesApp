@@ -1,4 +1,4 @@
-package com.rmuhamed.sample.galleryapp
+package com.rmuhamed.sample.myselfiesapp
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

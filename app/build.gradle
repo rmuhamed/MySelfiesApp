@@ -4,12 +4,14 @@ apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
 
+apply plugin: 'kotlin-kapt'
+
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
-        applicationId "com.rmuhamed.sample.galleryapp"
+        applicationId "com.rmuhamed.sample.myselfiesapp"
         minSdkVersion rootProject.ext.minSDKVersion
         targetSdkVersion rootProject.ext.targetSDKVersion
         versionCode 1
@@ -24,8 +26,13 @@ android {
         }
     }
 
+    compileOptions {
+        sourceCompatibility 1.8
+        targetCompatibility 1.8
+    }
+
     lintOptions {
-        disable 'RtlHardcoded', 'RtlCompat', 'RtlEnabled', 'ContentDescription'
+        disable 'RtlHardcoded', 'RtlCompat', 'RtlEnabled', 'ContentDescription', 'GoogleAppIndexingWarning'
         check 'NewApi', 'InlinedApi'
     }
 }
@@ -38,8 +45,17 @@ dependencies {
     implementation "androidx.appcompat:appcompat:${appcompatx_version}"
     implementation "androidx.constraintlayout:constraintlayout:${constraintlayoutx_version}"
 
+    implementation "androidx.lifecycle:lifecycle-extensions:${lifecycle_version}"
+    implementation "androidx.lifecycle:lifecycle-common-java8:${lifecycle_version}"
+
     implementation "androidx.camera:camera-core:${camerax_version}"
     implementation "androidx.camera:camera-camera2:${camerax_version}"
+
+    implementation "com.google.android.material:material:${material_components_version}"
+
+    implementation "com.squareup.retrofit2:retrofit:${retrofit_version}"
+    implementation "com.squareup.retrofit2:converter-gson:${retrofit_version}"
+    implementation "com.squareup.okhttp3:logging-interceptor:${logging_interceptor_version}"
 
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'

@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">MySelfiesApp</string>
+    <string name="login_signin_button_text">Let\'s go!</string>
+    <string name="login_password_hint_text">Password comes here</string>
+    <string name="login_password_helper_text">Just your pass authenticates yourself, so, please, do not forget it!</string>
+    <string name="login_username_hint_text">Please, fill with your username</string>
+    <string name="login_username_helper_text">Your e-mail address goes here</string>
+    <string name="login_welcome_title_label">Yours Selfies warehouse!</string>
 </resources>
