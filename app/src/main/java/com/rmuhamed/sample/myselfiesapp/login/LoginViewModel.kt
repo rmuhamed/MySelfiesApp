@@ -12,6 +12,7 @@ import retrofit2.Response
 class LoginViewModel : ViewModel() {
     val loginAvailableLiveData  = MutableLiveData(false)
     val showProgressLiveData  = MutableLiveData(false)
+    val loginSuccessfulLiveData = MutableLiveData(false)
 
     var userName = ""
         set(value) = value.run {
@@ -31,6 +32,7 @@ class LoginViewModel : ViewModel() {
         ).enqueue(object : Callback<TokenResponseDTO> {
             override fun onFailure(call: Call<TokenResponseDTO>, t: Throwable) {
                 showProgressLiveData.postValue(false)
+                loginSuccessfulLiveData.postValue(false)
             }
 
             override fun onResponse(
@@ -38,6 +40,7 @@ class LoginViewModel : ViewModel() {
                 response: Response<TokenResponseDTO>
             ) {
                 showProgressLiveData.postValue(false)
+                loginSuccessfulLiveData.postValue(true)
             }
         })
     }

@@ -9,9 +9,12 @@ import retrofit2.http.POST
 import retrofit2.http.Path
 
 interface ImgurAPI {
-    @POST("/ouath2/token")
+    @POST("/oauth2/token")
     fun createToken(@Body tokenRequest : TokenRequestDTO) : Call<TokenResponseDTO>
 
     @GET("/3/account/{username}")
     fun verifyAccount(@Path("userName") userName : String)
+
+    @GET("/3/album/{albumHash}/images")
+    fun getImages(@Path("albumHash") albumHash: String)
 }
