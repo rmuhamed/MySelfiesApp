@@ -2,7 +2,9 @@ package com.rmuhamed.sample.myselfiesapp.login
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.rmuhamed.sample.myselfiesapp.BuildConfig.*
 import com.rmuhamed.sample.myselfiesapp.api.RetrofitController
+import com.rmuhamed.sample.myselfiesapp.api.dto.BasicResponseDTO
 import com.rmuhamed.sample.myselfiesapp.api.dto.TokenRequestDTO
 import com.rmuhamed.sample.myselfiesapp.api.dto.TokenResponseDTO
 import retrofit2.Call
@@ -14,21 +16,21 @@ class LoginViewModel : ViewModel() {
     val showProgressLiveData  = MutableLiveData(false)
     val loginSuccessfulLiveData = MutableLiveData(false)
 
+    init {
+        RetrofitController.get()
+    }
+
     var userName = ""
         set(value) = value.run {
+            field = value
             loginAvailableLiveData.value = this.isNotBlank()
         }
 
     fun verifyAccount() {
         showProgressLiveData.value = true
 
-        RetrofitController.get()
         RetrofitController.imgurAPI.createToken(
-            TokenRequestDTO(
-                "760196043a2599811a13b01d838a60eed790332b",
-                "20e4ce28b9818fb",
-                "f7a5a634b505d6ce71313a704119fa3b609cff13"
-            )
+            TokenRequestDTO(API_REFRESH_TOKEN, API_CLIENT_ID, API_CLIENT_SECRET)
         ).enqueue(object : Callback<TokenResponseDTO> {
             override fun onFailure(call: Call<TokenResponseDTO>, t: Throwable) {
                 showProgressLiveData.postValue(false)
@@ -39,9 +41,35 @@ class LoginViewModel : ViewModel() {
                 call: Call<TokenResponseDTO>,
                 response: Response<TokenResponseDTO>
             ) {
-                showProgressLiveData.postValue(false)
-                loginSuccessfulLiveData.postValue(true)
+                accountExists(response.body()?.access_token)
             }
         })
+    }
+
+    private fun accountExists(accessToken: String?) {
+        accessToken?.let {
+            val authorization = "Bearer $accessToken"
+
+            RetrofitController.imgurAPI.verifyAccount(authorization, userName)
+                .enqueue(object : Callback<BasicResponseDTO> {
+                    override fun onFailure(call: Call<BasicResponseDTO>, t: Throwable) {
+                        showProgressLiveData.postValue(false)
+                        loginSuccessfulLiveData.postValue(false)
+                    }
+
+                    override fun onResponse(
+                        call: Call<BasicResponseDTO>,
+                        response: Response<BasicResponseDTO>
+                    ) {
+                        showProgressLiveData.postValue(false)
+                        loginSuccessfulLiveData.postValue(response.body()?.success ?: false)
+                    }
+
+                })
+        } ?: run {
+            showProgressLiveData.postValue(false)
+            loginSuccessfulLiveData.postValue(false)
+        }
+
     }
 }

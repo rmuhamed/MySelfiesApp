@@ -1,14 +1,14 @@
 package com.rmuhamed.sample.myselfiesapp.api
 
 import com.google.gson.GsonBuilder
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import com.rmuhamed.sample.myselfiesapp.BuildConfig.API_BASE_URL
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitController {
     lateinit var imgurAPI: ImgurAPI
-    val BASE_URL = "https://api.imgur.com";
 
     fun get() {
         val httpLoggingInterceptor = HttpLoggingInterceptor()
@@ -23,7 +23,7 @@ object RetrofitController {
             .create();
 
         val retrofit = Retrofit.Builder()
-            .baseUrl(BASE_URL)
+            .baseUrl(API_BASE_URL)
             .client(client)
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build();

@@ -17,12 +17,42 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField "String", "API_BASE_URL", API_BASE_URL
+        buildConfigField "String", "API_CLIENT_ID", CLIENT_ID
+        buildConfigField "String", "API_CLIENT_SECRET", CLIENT_SECRET
+        buildConfigField "String", "API_REFRESH_TOKEN", REFRESH_TOKEN
     }
 
+    flavorDimensions "tier"
+
     buildTypes {
-        release {
+        debug {
+            debuggable true
             minifyEnabled false
+            crunchPngs false
+        }
+
+        release {
+            minifyEnabled true
+            debuggable false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    productFlavors {
+        dev {
+            dimension "tier"
+            minSdkVersion 28
+            versionNameSuffix "-dev"
+            applicationIdSuffix '.dev'
+            resConfigs "en", "xxhdpi"
+        }
+
+        prod {
+            dimension "tier"
+            versionNameSuffix "-prod"
+            applicationIdSuffix '.prod'
         }
     }
 
