@@ -4,13 +4,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="48dp"
+    android:paddingTop="@dimen/margin_48"
+    android:paddingBottom="@dimen/margin_48"
+    android:paddingEnd="@dimen/margin_8"
+    android:paddingStart="@dimen/margin_8"
     tools:context=".login.LoginActivity">
 
     <ProgressBar
         android:id="@+id/progress"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="@dimen/margin_56"
+        android:layout_height="@dimen/margin_56"
+        android:indeterminate="true"
+        android:indeterminateTint="@color/colorPrimary"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -23,23 +28,23 @@
         android:id="@+id/login_welcome_label"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
+        android:layout_margin="@dimen/margin_8"
         android:text="@string/login_welcome_title_label"
         android:textColor="@color/colorPrimary"
-        android:textSize="24sp"
+        android:textSize="@dimen/text_size_28"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/login_username_inputtextfield"
+        android:id="@+id/login_username_input_textField"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginStart="@dimen/margin_8"
+        android:layout_marginTop="@dimen/margin_48"
         android:hint="@string/login_username_hint_text"
-        android:textSize="20sp"
-        app:errorEnabled="true"
+        android:textSize="@dimen/text_size_20"
+        app:errorEnabled="false"
         app:errorTextColor="@color/colorPrimary"
         app:helperText="@string/login_username_helper_text"
         app:layout_constraintEnd_toEndOf="parent"
@@ -53,33 +58,11 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/login_password_inputtextfield"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:hint="@string/login_password_hint_text"
-        android:textSize="20sp"
-        app:endIconMode="password_toggle"
-        app:endIconTint="@color/colorPrimary"
-        app:helperText="@string/login_password_helper_text"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/login_username_inputtextfield">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textPassword" />
-
-    </com.google.android.material.textfield.TextInputLayout>
-
     <com.google.android.material.button.MaterialButton
         android:id="@+id/login_sign_in_button"
         android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:layout_marginBottom="8dp"
+        android:layout_height="@dimen/margin_56"
+        android:layout_marginBottom="@dimen/margin_8"
         android:backgroundTint="@color/colorPrimary"
         android:text="@string/login_signin_button_text"
         android:textColor="@android:color/white"

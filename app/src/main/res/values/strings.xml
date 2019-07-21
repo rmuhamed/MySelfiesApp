@@ -6,4 +6,5 @@
     <string name="login_username_hint_text">Please, fill with your username</string>
     <string name="login_username_helper_text">Your e-mail address goes here</string>
     <string name="login_welcome_title_label">Yours Selfies warehouse!</string>
+    <string name="login_username_input_textfield_error">Invalid Username</string>
 </resources>
