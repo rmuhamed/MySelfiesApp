@@ -19,12 +19,18 @@ class LoginActivity : AppCompatActivity() {
 
         val viewModel = ViewModelProviders.of(this).get(LoginViewModel::class.java)
 
-        login_username_inputtextfield.editText?.doAfterTextChanged {
+        login_username_input_textField.editText?.doAfterTextChanged {
             viewModel.userName = it.toString()
         }
 
-        viewModel.showProgressLiveData.observe(this, Observer {
-            progress.visibility = if(it) View.VISIBLE else View.GONE
+        viewModel.loginInProgressLiveData.observe(this, Observer {
+            if (it) {
+                progress.visibility = View.VISIBLE
+                login_sign_in_button.isEnabled = false
+            } else {
+                progress.visibility = View.GONE
+                login_sign_in_button.isEnabled = true
+            }
         })
 
         viewModel.loginAvailableLiveData.observe(this, Observer {
@@ -41,12 +47,18 @@ class LoginActivity : AppCompatActivity() {
                 )
             } else {
                 //Show error
-                login_username_inputtextfield.error = "Invalid Username"
+                this.showUserNameError()
             }
         })
 
         login_sign_in_button.setOnClickListener {
             viewModel.verifyAccount()
         }
+    }
+
+    private fun showUserNameError() {
+        login_username_input_textField.isErrorEnabled = true
+        login_username_input_textField.error =
+            getString(R.string.login_username_input_textfield_error)
     }
 }
