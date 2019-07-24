@@ -15,7 +15,7 @@ import retrofit2.Response
 class LoginViewModel : ViewModel() {
     val loginAvailableLiveData = MutableLiveData(false)
     val loginInProgressLiveData = MutableLiveData(false)
-    val loginSuccessfulLiveData = MutableLiveData(true)
+    val loginSuccessfulLiveData = MutableLiveData(false)
 
     init {
         RetrofitController.get()
@@ -55,15 +55,15 @@ class LoginViewModel : ViewModel() {
         val authorization = "Bearer $accessToken"
 
         RetrofitController.imgurAPI.verifyAccount(authorization, userName)
-            .enqueue(object : Callback<BasicResponseDTO> {
-                override fun onFailure(call: Call<BasicResponseDTO>, t: Throwable) {
+            .enqueue(object : Callback<BasicResponseDTO<Boolean>> {
+                override fun onFailure(call: Call<BasicResponseDTO<Boolean>>, t: Throwable) {
                     Log.e(LoginViewModel::class.java.simpleName, t.localizedMessage ?: "Error")
                     onErrorToBeNotified()
                 }
 
                 override fun onResponse(
-                    call: Call<BasicResponseDTO>,
-                    response: Response<BasicResponseDTO>
+                    call: Call<BasicResponseDTO<Boolean>>,
+                    response: Response<BasicResponseDTO<Boolean>>
                 ) {
                     loginInProgressLiveData.postValue(false)
                     loginSuccessfulLiveData.postValue(response.body()?.success ?: false)

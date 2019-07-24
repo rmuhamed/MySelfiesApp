@@ -23,10 +23,11 @@
         android:id="@+id/gallery_take_new_picture_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
+        android:layout_margin="@dimen/margin_32"
+        app:backgroundTint="@color/colorPrimary"
         android:src="@drawable/ic_camera_placeholder"
-        app:elevation="5dp"
-        app:fabSize="normal"
+        app:elevation="@dimen/margin_8"
+        app:fabCustomSize="@dimen/margin_64"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 

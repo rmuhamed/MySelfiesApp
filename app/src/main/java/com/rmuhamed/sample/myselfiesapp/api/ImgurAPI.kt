@@ -1,18 +1,22 @@
 package com.rmuhamed.sample.myselfiesapp.api
 
-import com.rmuhamed.sample.myselfiesapp.api.dto.BasicResponseDTO
-import com.rmuhamed.sample.myselfiesapp.api.dto.TokenRequestDTO
-import com.rmuhamed.sample.myselfiesapp.api.dto.TokenResponseDTO
+import com.rmuhamed.sample.myselfiesapp.api.dto.*
 import retrofit2.Call
 import retrofit2.http.*
 
 interface ImgurAPI {
     @POST("/oauth2/token")
-    fun createToken(@Body tokenRequest : TokenRequestDTO) : Call<TokenResponseDTO>
+    fun createToken(@Body tokenRequest: TokenRequestDTO): Call<TokenResponseDTO>
 
     @GET("/3/account/{userName}/verifyemail")
-    fun verifyAccount(@Header("Authorization") authHeader: String, @Path("userName") userName: String): Call<BasicResponseDTO>
+    fun verifyAccount(@Header("Authorization") authHeader: String, @Path("userName") userName: String): Call<BasicResponseDTO<Boolean>>
 
     @GET("/3/album/{albumHash}/images")
-    fun getImages(@Path("albumHash") albumHash: String)
+    fun getImages(@Header("Authorization") authHeader: String, @Path("albumHash") albumHash: String): Call<List<ImageDTO>>
+
+    @POST("/3/album")
+    fun createAlbum(@Header("Authorization") authHeader: String, @Body title: String): Call<BasicResponseDTO<Int>>
+
+    @POST("/3/upload")
+    fun uploadPhoto(@Header("Authorization") authHeader: String, @Body uploadRequest: UploadImageRequestDTO): Call<UploadImageResponseDTO>
 }
