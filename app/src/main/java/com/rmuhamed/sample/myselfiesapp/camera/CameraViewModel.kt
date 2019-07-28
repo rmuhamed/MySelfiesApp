@@ -14,7 +14,7 @@ import java.io.File
 import java.util.*
 
 class CameraViewModel : ViewModel() {
-    private var clientId = BuildConfig.API_CLIENT_ID
+    private var accessToken = BuildConfig.ACCESS_TOKEN
     val uploading = MutableLiveData<Boolean>()
 
     init {
@@ -33,7 +33,7 @@ class CameraViewModel : ViewModel() {
             "A description"
         )
 
-        RetrofitController.imgurAPI.uploadPhoto("Client-ID $clientId", dto).enqueue(object :
+        RetrofitController.imgurAPI.uploadPhoto("Bearer $accessToken", dto).enqueue(object :
             Callback<BasicResponseDTO<UploadedImageDTO>> {
             override fun onFailure(call: Call<BasicResponseDTO<UploadedImageDTO>>, t: Throwable) {
                 uploading.postValue(false)

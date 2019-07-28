@@ -9,14 +9,25 @@ interface ImgurAPI {
     fun createToken(@Body tokenRequest: TokenRequestDTO): Call<TokenResponseDTO>
 
     @GET("/3/account/{userName}/verifyemail")
-    fun verifyAccount(@Header("Authorization") authHeader: String, @Path("userName") userName: String): Call<BasicResponseDTO<Boolean>>
+    fun verifyAccount(@Header("Authorization") authHeader: String, @Path("userName") userName: String)
+            : Call<BasicResponseDTO<Boolean>>
 
     @GET("/3/album/{albumHash}/images")
-    fun getImages(@Header("Authorization") authHeader: String, @Path("albumHash") albumHash: String): Call<List<ImageDTO>>
+    fun picturesBy(@Header("Authorization") authHeader: String, @Path("albumHash") albumHash: String)
+            : Call<BasicResponseDTO<List<ImageDTO>>>
+
+    @GET("/3/account/{username}/albums/{page}")
+    fun albumsBy(
+        @Header("Authorization") authHeader: String, @Path("username") userName: String, @Path(
+            "page"
+        ) page: Int
+    ): Call<BasicResponseDTO<List<AlbumDTO>>>
 
     @POST("/3/album")
-    fun createAlbum(@Header("Authorization") authHeader: String, @Body requestDTO: CreateAlbumRequestDTO): Call<BasicResponseDTO<CreatedAlbumDTO>>
+    fun createAlbum(@Header("Authorization") authHeader: String, @Body requestDTO: CreateAlbumRequestDTO)
+            : Call<BasicResponseDTO<CreatedAlbumDTO>>
 
     @POST("/3/upload")
-    fun uploadPhoto(@Header("Authorization") authHeader: String, @Body requestDTO: UploadImageRequestDTO): Call<BasicResponseDTO<UploadedImageDTO>>
+    fun uploadPhoto(@Header("Authorization") authHeader: String, @Body requestDTO: UploadImageRequestDTO)
+            : Call<BasicResponseDTO<UploadedImageDTO>>
 }
