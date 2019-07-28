@@ -15,8 +15,8 @@ interface ImgurAPI {
     fun getImages(@Header("Authorization") authHeader: String, @Path("albumHash") albumHash: String): Call<List<ImageDTO>>
 
     @POST("/3/album")
-    fun createAlbum(@Header("Authorization") authHeader: String, @Body title: String): Call<BasicResponseDTO<Int>>
+    fun createAlbum(@Header("Authorization") authHeader: String, @Body requestDTO: CreateAlbumRequestDTO): Call<BasicResponseDTO<CreatedAlbumDTO>>
 
     @POST("/3/upload")
-    fun uploadPhoto(@Header("Authorization") authHeader: String, @Body uploadRequest: UploadImageRequestDTO): Call<UploadImageResponseDTO>
+    fun uploadPhoto(@Header("Authorization") authHeader: String, @Body requestDTO: UploadImageRequestDTO): Call<BasicResponseDTO<UploadedImageDTO>>
 }

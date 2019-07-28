@@ -43,12 +43,12 @@ class GalleryActivity : AppCompatActivity() {
         })
 
         viewModel.albumCreationLiveData.observe(this, Observer {
-            it.data?.let {
+            it?.let {
                 this@GalleryActivity.startActivity(
-                    Intent(
-                        this@GalleryActivity,
-                        CameraActivity::class.java
-                    )
+                    Intent().apply {
+                        setClass(this@GalleryActivity, CameraActivity::class.java)
+                        putExtra("ALBUM_ID", it)
+                    }
                 )
             }
         })

@@ -1,6 +1,6 @@
 package com.rmuhamed.sample.myselfiesapp.api.dto
 
-data class ImageDataResponseDTO(
+data class UploadedImageDTO(
     val account_id: Int,
     val account_url: Any,
     val ad_type: Int,

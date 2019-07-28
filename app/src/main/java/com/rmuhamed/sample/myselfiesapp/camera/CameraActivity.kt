@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.graphics.Matrix
 import android.os.Bundle
-import android.util.Log
 import android.util.Rational
 import android.util.Size
 import android.view.Surface
@@ -38,6 +37,8 @@ class CameraActivity : AppCompatActivity() {
 
         viewFinder = findViewById(R.id.view_finder)
 
+        val albumId = intent.getStringExtra("ALBUM_ID")
+
         viewModel = ViewModelProviders.of(this).get(CameraViewModel::class.java)
 
         previewConfig = buildPreviewConfiguration()
@@ -59,11 +60,11 @@ class CameraActivity : AppCompatActivity() {
         }
 
         findViewById<ImageButton>(R.id.capture_button).setOnClickListener {
-            handleNewSelfie()
+            handleNewSelfie(albumId)
         }
     }
 
-    private fun handleNewSelfie() {
+    private fun handleNewSelfie(albumId: String) {
         val file = File(
             externalMediaDirs.first(),
             "${System.currentTimeMillis()}.jpg"
@@ -77,16 +78,14 @@ class CameraActivity : AppCompatActivity() {
                 ) {
                     val msg = "Photo capture failed: $message"
                     Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
-                    Log.e("MySelfiesApp", msg)
                     exc?.printStackTrace()
                 }
 
                 override fun onImageSaved(file: File) {
                     val msg = "Photo capture succeeded: ${file.absolutePath}"
                     Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
-                    Log.d("MySelfiesApp", msg)
 
-                    viewModel.upload(file)
+                    viewModel.upload(albumId, file)
                 }
             })
     }
@@ -169,6 +168,7 @@ class CameraActivity : AppCompatActivity() {
             .apply {
                 setTargetAspectRatio(Rational(1, 1))
                 setLensFacing(CameraX.LensFacing.FRONT)
+                setTargetResolution(Size(640, 640))
                 setCaptureMode(ImageCapture.CaptureMode.MIN_LATENCY)
             }.build()
 }
