@@ -5,11 +5,38 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/gallery_empty_image"
+        android:layout_width="0dp"
+        android:layout_height="256dp"
+        android:scaleType="centerInside"
+        android:visibility="gone"
+        tools:visibility="visible"
+        android:src="@drawable/ic_gallery_no_pictures"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/gallery_empty_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        tools:visibility="visible"
+        style="@style/BackLabel"
+        android:text="@string/gallery_no_pictures_label"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/gallery_empty_image"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/gallery_pictures"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:padding="8dp"
+        android:visibility="gone"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -19,15 +46,31 @@
         tools:itemCount="27"
         tools:listitem="@layout/gallery_item" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/gallery_take_new_picture_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:src="@drawable/ic_camera_placeholder"
-        app:elevation="5dp"
-        app:fabSize="normal"
+        android:layout_margin="@dimen/margin_32"
+        android:textColor="@color/white"
+        android:text="@string/gallery_first_picture_label"
+        app:backgroundTint="@color/colorPrimary"
+        app:elevation="@dimen/margin_8"
+        app:fabCustomSize="@dimen/margin_64"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <ProgressBar
+        android:id="@+id/progress"
+        android:layout_width="@dimen/margin_56"
+        android:layout_height="@dimen/margin_56"
+        android:indeterminate="true"
+        android:indeterminateTint="@color/colorPrimary"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
