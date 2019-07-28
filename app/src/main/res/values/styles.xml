@@ -8,4 +8,14 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="ColorPrimaryTitleLabel">
+        <item name="android:textSize">@dimen/text_size_28</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+    </style>
+
+    <style name="BackLabel">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
 </resources>

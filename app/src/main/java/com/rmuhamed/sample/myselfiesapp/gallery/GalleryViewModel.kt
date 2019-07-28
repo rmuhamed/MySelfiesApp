@@ -16,7 +16,7 @@ class GalleryViewModel : ViewModel() {
 
     val albumCreationLiveData = MutableLiveData(BasicResponseDTO<Int>(data = null, success = false))
     val albumNotCreatedLiveData = MutableLiveData<String?>(null)
-    val albumPhotosLiveData = MutableLiveData<List<ImageDTO>>(emptyList())
+    val albumPhotosLiveData = MutableLiveData<List<ImageDTO>?>(null)
 
     init {
         RetrofitController.get()
