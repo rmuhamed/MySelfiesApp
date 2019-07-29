@@ -15,7 +15,8 @@ import retrofit2.Response
 class LoginViewModel : ViewModel() {
     val loginAvailableLiveData = MutableLiveData(false)
     val loginInProgressLiveData = MutableLiveData(false)
-    val loginSuccessfulLiveData = MutableLiveData(false)
+    val loginSuccessfulLiveData = MutableLiveData("")
+    val credentialsInvalidLiveData = MutableLiveData(false)
 
     init {
         RetrofitController.get()
@@ -65,8 +66,12 @@ class LoginViewModel : ViewModel() {
                     call: Call<BasicResponseDTO<Boolean>>,
                     response: Response<BasicResponseDTO<Boolean>>
                 ) {
-                    loginInProgressLiveData.postValue(false)
-                    loginSuccessfulLiveData.postValue(response.body()?.success ?: false)
+                    response.body()?.let {
+                        loginInProgressLiveData.postValue(false)
+                        loginSuccessfulLiveData.postValue(accessToken)
+                    } ?: run {
+                        onErrorToBeNotified()
+                    }
                 }
 
             })
@@ -76,6 +81,6 @@ class LoginViewModel : ViewModel() {
 
     private fun onErrorToBeNotified() {
         loginInProgressLiveData.postValue(false)
-        loginSuccessfulLiveData.postValue(false)
+        credentialsInvalidLiveData.postValue(true)
     }
 }

@@ -9,5 +9,6 @@
     <string name="login_username_input_textfield_error">Invalid Username</string>
     <string name="gallery_no_pictures_label">You have no pictures yet :(</string>
     <string name="gallery_first_picture_label">Take your first one; GO!</string>
+    <string name="gallery_pictures_could_not_retrieved">Pictures could not be retrieve</string>
 
 </resources>

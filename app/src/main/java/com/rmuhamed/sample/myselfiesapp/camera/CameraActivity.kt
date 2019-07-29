@@ -38,6 +38,7 @@ class CameraActivity : AppCompatActivity() {
         viewFinder = findViewById(R.id.view_finder)
 
         val albumId = intent.getStringExtra("ALBUM_ID")
+        val accessToken = intent.getStringExtra("ACCESS_TOKEN")
 
         viewModel = ViewModelProviders.of(this).get(CameraViewModel::class.java)
 
@@ -60,11 +61,11 @@ class CameraActivity : AppCompatActivity() {
         }
 
         findViewById<ImageButton>(R.id.capture_button).setOnClickListener {
-            handleNewSelfie(albumId)
+            handleNewSelfie(albumId, accessToken)
         }
     }
 
-    private fun handleNewSelfie(albumId: String) {
+    private fun handleNewSelfie(albumId: String, accessToken: String) {
         val file = File(
             externalMediaDirs.first(),
             "${System.currentTimeMillis()}.jpg"
@@ -85,7 +86,7 @@ class CameraActivity : AppCompatActivity() {
                     val msg = "Photo capture succeeded: ${file.absolutePath}"
                     Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
 
-                    viewModel.upload(albumId, file)
+                    viewModel.upload(albumId, accessToken, file)
                 }
             })
     }
