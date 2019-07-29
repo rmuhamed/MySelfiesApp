@@ -9,6 +9,7 @@
     <dimen name="margin_64">64dp</dimen>
 
     <dimen name="view_size_128">128dp</dimen>
+    <dimen name="view_size_256">256dp</dimen>
 
     <dimen name="text_size_20">20sp</dimen>
     <dimen name="text_size_24">24sp</dimen>

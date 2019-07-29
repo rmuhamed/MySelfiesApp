@@ -2,7 +2,6 @@ package com.rmuhamed.sample.myselfiesapp.gallery
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.rmuhamed.sample.myselfiesapp.BuildConfig
 import com.rmuhamed.sample.myselfiesapp.api.RetrofitController
 import com.rmuhamed.sample.myselfiesapp.api.dto.*
 import org.json.JSONObject
@@ -15,22 +14,20 @@ class GalleryViewModel : ViewModel() {
 
     val albumCreationLiveData = MutableLiveData<String?>(null)
     val albumNotCreatedLiveData = MutableLiveData<String?>(null)
-    val albumPhotosLiveData = MutableLiveData<List<ImageDTO>?>(null)
-
-    private val accessToken = BuildConfig.ACCESS_TOKEN
+    val photosRetrievedLiveData = MutableLiveData<List<ImageDTO>?>(null)
+    val photosNotRetrievedLiveData = MutableLiveData(false)
 
     lateinit var albumId: String
 
     init {
         RetrofitController.get()
-        getAlbums()
     }
 
-    private fun getAlbums() {
+    fun getAlbums(accessToken: String) {
         RetrofitController.imgurAPI.albumsBy("Bearer $accessToken", "rmuhamed", 0).enqueue(object :
             Callback<BasicResponseDTO<List<AlbumDTO>>> {
             override fun onFailure(call: Call<BasicResponseDTO<List<AlbumDTO>>>, t: Throwable) {
-                albumPhotosLiveData.postValue(null)
+                photosRetrievedLiveData.postValue(null)
             }
 
             override fun onResponse(
@@ -39,17 +36,17 @@ class GalleryViewModel : ViewModel() {
             ) {
                 response.body()?.let {
                     albumId = it.data!![0].id
-                    getAlbumPictures()
+                    getAlbumPictures(accessToken)
                 } ?: run {
                     val error = JSONObject(response.errorBody()!!.string())
                     val message = error.optJSONObject("data")?.optString("error")
-                    albumPhotosLiveData.postValue(null)
+                    photosNotRetrievedLiveData.postValue(true)
                 }
             }
         })
     }
 
-    fun getAlbumPictures() {
+    fun getAlbumPictures(accessToken: String) {
         RetrofitController.imgurAPI.picturesBy("Bearer $accessToken", albumId).enqueue(object :
             Callback<BasicResponseDTO<List<ImageDTO>>> {
             override fun onFailure(call: Call<BasicResponseDTO<List<ImageDTO>>>, t: Throwable) {
@@ -60,7 +57,7 @@ class GalleryViewModel : ViewModel() {
                 response: Response<BasicResponseDTO<List<ImageDTO>>>
             ) {
                 response.body()?.let {
-                    albumPhotosLiveData.postValue(response.body()!!.data)
+                    photosRetrievedLiveData.postValue(response.body()!!.data)
                 }
             }
 
@@ -69,7 +66,7 @@ class GalleryViewModel : ViewModel() {
 
     fun existsAnAlbum() = albumId.isNotBlank()
 
-    fun createAlbum() {
+    fun createAlbum(accessToken: String) {
         val requestDTO = CreateAlbumRequestDTO("Album", "Description")
         RetrofitController.imgurAPI.createAlbum("Bearer $accessToken", requestDTO).enqueue(object :
             Callback<BasicResponseDTO<CreatedAlbumDTO>> {

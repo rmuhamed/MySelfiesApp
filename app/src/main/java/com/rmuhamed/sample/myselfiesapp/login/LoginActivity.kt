@@ -37,17 +37,19 @@ class LoginActivity : AppCompatActivity() {
             login_sign_in_button.isEnabled = it
         })
 
-        viewModel.loginSuccessfulLiveData.observe(this, Observer { success ->
-            if (success) {
+        viewModel.credentialsInvalidLiveData.observe(this, Observer { invalid ->
+            if (invalid) {
+                showUserNameError()
+            }
+        })
+
+        viewModel.loginSuccessfulLiveData.observe(this, Observer { accessToken ->
+            if (accessToken.isNotBlank()) {
                 this@LoginActivity.startActivity(
-                    Intent(
-                        this@LoginActivity,
-                        GalleryActivity::class.java
-                    )
-                )
-            } else {
-                //Show error
-                this.showUserNameError()
+                    Intent().apply {
+                        setClass(this@LoginActivity, GalleryActivity::class.java)
+                        putExtra("ACCESS_TOKEN", accessToken)
+                    })
             }
         })
 

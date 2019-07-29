@@ -20,7 +20,12 @@ class GalleryActivity : AppCompatActivity() {
 
         val viewModel = ViewModelProviders.of(this).get(GalleryViewModel::class.java)
 
-        viewModel.albumPhotosLiveData.observe(this, Observer {
+
+        val accessToken = intent.getStringExtra("ACCESS_TOKEN")
+
+        viewModel.getAlbums(accessToken)
+
+        viewModel.photosRetrievedLiveData.observe(this, Observer {
             progress.visibility = View.GONE
             it?.let {
                 if (it.isEmpty()) {
@@ -30,7 +35,11 @@ class GalleryActivity : AppCompatActivity() {
                     gallery_pictures.visibility = View.VISIBLE
                     gallery_pictures.adapter = GalleryAdapter(images = it)
                 }
-            } ?: run {
+            }
+        })
+
+        viewModel.photosNotRetrievedLiveData.observe(this, Observer {
+            if (it) {
                 Toast.makeText(
                     this,
                     R.string.gallery_pictures_could_not_retrieved,
@@ -41,9 +50,12 @@ class GalleryActivity : AppCompatActivity() {
 
         gallery_take_new_picture_button.setOnClickListener {
             if (!viewModel.existsAnAlbum()) {
-                viewModel.createAlbum()
+                viewModel.createAlbum(accessToken)
             } else {
-                this@GalleryActivity.takeNewPicture(albumId = viewModel.albumId)
+                this@GalleryActivity.takeNewPicture(
+                    albumId = viewModel.albumId,
+                    accessToken = accessToken!!
+                )
             }
         }
 
@@ -56,16 +68,17 @@ class GalleryActivity : AppCompatActivity() {
 
         viewModel.albumCreationLiveData.observe(this, Observer {
             it?.let {
-                this@GalleryActivity.takeNewPicture(albumId = it)
+                this@GalleryActivity.takeNewPicture(albumId = it, accessToken = accessToken!!)
             }
         })
     }
 
-    private fun takeNewPicture(albumId: String) {
+    private fun takeNewPicture(albumId: String, accessToken: String) {
         this@GalleryActivity.startActivity(
             Intent().apply {
                 setClass(this@GalleryActivity, CameraActivity::class.java)
                 putExtra("ALBUM_ID", albumId)
+                putExtra("ACCESS_TOKEN", accessToken)
             }
         )
     }
