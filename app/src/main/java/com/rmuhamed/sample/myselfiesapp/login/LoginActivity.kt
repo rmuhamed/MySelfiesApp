@@ -6,9 +6,10 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import com.rmuhamed.sample.myselfiesapp.R
 import com.rmuhamed.sample.myselfiesapp.gallery.GalleryActivity
+import com.rmuhamed.sample.myselfiesapp.getViewModel
+import com.rmuhamed.sample.myselfiesapp.repository.LoginRepository
 import kotlinx.android.synthetic.main.activity_login.*
 
 class LoginActivity : AppCompatActivity() {
@@ -17,7 +18,7 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        val viewModel = ViewModelProviders.of(this).get(LoginViewModel::class.java)
+        val viewModel = getViewModel { LoginViewModel(LoginRepository()) }
 
         login_username_input_textField.editText?.doAfterTextChanged {
             viewModel.userName = it.toString()
