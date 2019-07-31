@@ -3,14 +3,14 @@ package com.rmuhamed.sample.myselfiesapp.gallery
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import com.rmuhamed.sample.myselfiesapp.R
 import com.rmuhamed.sample.myselfiesapp.camera.CameraActivity
+import com.rmuhamed.sample.myselfiesapp.getViewModel
+import com.rmuhamed.sample.myselfiesapp.repository.GalleryRepository
 import kotlinx.android.synthetic.main.activity_gallery.*
 
 class GalleryActivity : AppCompatActivity() {
@@ -18,12 +18,10 @@ class GalleryActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_gallery)
 
-        val viewModel = ViewModelProviders.of(this).get(GalleryViewModel::class.java)
-
-
         val accessToken = intent.getStringExtra("ACCESS_TOKEN")
+        val userName = intent.getStringExtra("USER_NAME")
 
-        viewModel.getAlbums(accessToken)
+        val viewModel = getViewModel { GalleryViewModel(GalleryRepository(accessToken, userName)) }
 
         viewModel.photosRetrievedLiveData.observe(this, Observer {
             progress.visibility = View.GONE
@@ -38,19 +36,29 @@ class GalleryActivity : AppCompatActivity() {
             }
         })
 
+        viewModel.errorLiveData.observe(this, Observer {
+            it?.let {
+                Snackbar.make(
+                    gallery_pictures,
+                    it,
+                    BaseTransientBottomBar.LENGTH_SHORT
+                ).show()
+            }
+        })
+
         viewModel.photosNotRetrievedLiveData.observe(this, Observer {
             if (it) {
-                Toast.makeText(
-                    this,
+                Snackbar.make(
+                    gallery_pictures,
                     R.string.gallery_pictures_could_not_retrieved,
-                    Toast.LENGTH_LONG
+                    BaseTransientBottomBar.LENGTH_SHORT
                 ).show()
             }
         })
 
         gallery_take_new_picture_button.setOnClickListener {
             if (!viewModel.existsAnAlbum()) {
-                viewModel.createAlbum(accessToken)
+                //TODO: RM - Show Dialog with two fields
             } else {
                 this@GalleryActivity.takeNewPicture(
                     albumId = viewModel.albumId,
@@ -61,7 +69,7 @@ class GalleryActivity : AppCompatActivity() {
 
         viewModel.albumNotCreatedLiveData.observe(this, Observer {
             it?.let {
-                Snackbar.make(gallery_pictures, it, BaseTransientBottomBar.LENGTH_LONG).show()
+                Snackbar.make(gallery_pictures, it, BaseTransientBottomBar.LENGTH_SHORT).show()
                 progress.visibility = View.GONE
             }
         })

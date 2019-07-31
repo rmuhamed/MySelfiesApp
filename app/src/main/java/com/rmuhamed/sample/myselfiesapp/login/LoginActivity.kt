@@ -50,6 +50,7 @@ class LoginActivity : AppCompatActivity() {
                     Intent().apply {
                         setClass(this@LoginActivity, GalleryActivity::class.java)
                         putExtra("ACCESS_TOKEN", accessToken)
+                        putExtra("USER_NAME", viewModel.userName)
                     })
             }
         })
