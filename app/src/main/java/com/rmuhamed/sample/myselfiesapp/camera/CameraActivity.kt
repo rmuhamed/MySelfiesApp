@@ -1,27 +1,25 @@
 package com.rmuhamed.sample.myselfiesapp.camera
 
-import android.Manifest
-import android.content.pm.PackageManager
 import android.graphics.Matrix
 import android.os.Bundle
 import android.util.Rational
 import android.util.Size
 import android.view.Surface
 import android.view.TextureView
+import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.*
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.Observer
+import com.google.android.material.snackbar.BaseTransientBottomBar.LENGTH_SHORT
+import com.google.android.material.snackbar.Snackbar
+import com.rmuhamed.sample.myselfiesapp.*
 import com.rmuhamed.sample.myselfiesapp.R
+import com.rmuhamed.sample.myselfiesapp.repository.CameraRepository
+import kotlinx.android.synthetic.main.activity_camera.*
 import java.io.File
-
-private const val REQUEST_CODE_PERMISSIONS = 10
-
-private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
 
 class CameraActivity : AppCompatActivity() {
     private lateinit var viewModel: CameraViewModel
@@ -40,32 +38,46 @@ class CameraActivity : AppCompatActivity() {
         val albumId = intent.getStringExtra("ALBUM_ID")
         val accessToken = intent.getStringExtra("ACCESS_TOKEN")
 
-        viewModel = ViewModelProviders.of(this).get(CameraViewModel::class.java)
+        viewModel = getViewModel { CameraViewModel(CameraRepository(albumId, accessToken)) }
 
         previewConfig = buildPreviewConfiguration()
         imageCaptureConfig = buildImageCaptureConfiguration()
 
-        if (allPermissionsGranted()) {
+        if (allPermissionsGranted(CAMERA_PERMISSION)) {
             viewFinder.post { initCamera(previewConfig, imageCaptureConfig) }
         } else {
             ActivityCompat.requestPermissions(
                 this,
-                REQUIRED_PERMISSIONS,
+                CAMERA_PERMISSION,
                 REQUEST_CODE_PERMISSIONS
             )
         }
+
+        viewModel.uploading.observe(this, Observer {
+            if (it) progress.visibility = View.VISIBLE else View.GONE
+        })
+
+        viewModel.successLiveData.observe(this, Observer {
+            Snackbar.make(capture_button, "Successfully uploaed", LENGTH_SHORT).show()
+        })
+
+        viewModel.errorLiveData.observe(this, Observer {
+            it?.let {
+                Snackbar.make(capture_button, it, LENGTH_SHORT).show()
+            }
+        })
 
         // Every time the provided texture view changes, recompute layout
         viewFinder.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
             updateTransform()
         }
 
-        findViewById<ImageButton>(R.id.capture_button).setOnClickListener {
-            handleNewSelfie(albumId, accessToken)
+        capture_button.setOnClickListener {
+            captureNewPicture()
         }
     }
 
-    private fun handleNewSelfie(albumId: String, accessToken: String) {
+    private fun captureNewPicture() {
         val file = File(
             externalMediaDirs.first(),
             "${System.currentTimeMillis()}.jpg"
@@ -86,7 +98,7 @@ class CameraActivity : AppCompatActivity() {
                     val msg = "Photo capture succeeded: ${file.absolutePath}"
                     Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
 
-                    viewModel.upload(albumId, accessToken, file)
+                    viewModel.doUpload(file, "Picture", "Title", "Description")
                 }
             })
     }
@@ -95,7 +107,7 @@ class CameraActivity : AppCompatActivity() {
         requestCode: Int, permissions: Array<String>, grantResults: IntArray
     ) {
         if (requestCode == REQUEST_CODE_PERMISSIONS) {
-            if (allPermissionsGranted()) {
+            if (allPermissionsGranted(CAMERA_PERMISSION)) {
                 viewFinder.post { initCamera(previewConfig, imageCaptureConfig) }
             } else {
                 Toast.makeText(
@@ -148,12 +160,6 @@ class CameraActivity : AppCompatActivity() {
 
         // Finally, apply transformations to our TextureView
         viewFinder.setTransform(matrix)
-    }
-
-    private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
-        ContextCompat.checkSelfPermission(
-            baseContext, it
-        ) == PackageManager.PERMISSION_GRANTED
     }
 
     private fun buildPreviewConfiguration(): PreviewConfig =
