@@ -7,6 +7,11 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProviders
 
+
+const val ALBUM_ID = "ALBUM_ID"
+const val ACCESS_TOKEN = "ACCESS_TOKEN"
+const val USER_NAME = "USER_NAME"
+
 const val REQUEST_CODE_PERMISSIONS = 10
 val CAMERA_PERMISSION = arrayOf(Manifest.permission.CAMERA)
 

@@ -35,8 +35,8 @@ class CameraActivity : AppCompatActivity() {
 
         viewFinder = findViewById(R.id.view_finder)
 
-        val albumId = intent.getStringExtra("ALBUM_ID")
-        val accessToken = intent.getStringExtra("ACCESS_TOKEN")
+        val albumId = intent.getStringExtra(ALBUM_ID)
+        val accessToken = intent.getStringExtra(ACCESS_TOKEN)
 
         viewModel = getViewModel { CameraViewModel(CameraRepository(albumId, accessToken)) }
 
@@ -54,11 +54,11 @@ class CameraActivity : AppCompatActivity() {
         }
 
         viewModel.uploading.observe(this, Observer {
-            if (it) progress.visibility = View.VISIBLE else View.GONE
+            progress.visibility = if (it) View.VISIBLE else View.GONE
         })
 
         viewModel.successLiveData.observe(this, Observer {
-            Snackbar.make(capture_button, "Successfully uploaed", LENGTH_SHORT).show()
+            Snackbar.make(capture_button, R.string.camera_upload_successful, LENGTH_SHORT).show()
         })
 
         viewModel.errorLiveData.observe(this, Observer {
@@ -110,10 +110,10 @@ class CameraActivity : AppCompatActivity() {
             if (allPermissionsGranted(CAMERA_PERMISSION)) {
                 viewFinder.post { initCamera(previewConfig, imageCaptureConfig) }
             } else {
-                Toast.makeText(
-                    this,
-                    "Permissions not granted by the user.",
-                    Toast.LENGTH_SHORT
+                Snackbar.make(
+                    capture_button,
+                    R.string.camera_permissions_not_granted,
+                    LENGTH_SHORT
                 ).show()
                 finish()
             }

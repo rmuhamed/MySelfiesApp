@@ -7,7 +7,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
+import com.rmuhamed.sample.myselfiesapp.ACCESS_TOKEN
 import com.rmuhamed.sample.myselfiesapp.R
+import com.rmuhamed.sample.myselfiesapp.USER_NAME
 import com.rmuhamed.sample.myselfiesapp.camera.CameraActivity
 import com.rmuhamed.sample.myselfiesapp.getViewModel
 import com.rmuhamed.sample.myselfiesapp.repository.GalleryRepository
@@ -18,8 +20,8 @@ class GalleryActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_gallery)
 
-        val accessToken = intent.getStringExtra("ACCESS_TOKEN")
-        val userName = intent.getStringExtra("USER_NAME")
+        val accessToken = intent.getStringExtra(ACCESS_TOKEN)
+        val userName = intent.getStringExtra(USER_NAME)
 
         val viewModel = getViewModel { GalleryViewModel(GalleryRepository(accessToken, userName)) }
 
