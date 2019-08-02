@@ -16,19 +16,21 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/capture_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/margin_48"
-        android:src="@drawable/ic_selfie_preview"
-        android:tint="@color/white"
+        android:text="@string/camera_take_picture_button_label"
         app:backgroundTint="@color/colorPrimary"
         app:elevation="@dimen/margin_8"
+        android:textColor="@color/white"
         app:fabCustomSize="@dimen/margin_64"
+        app:icon="@drawable/ic_selfie_preview"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:iconTint="@color/white" />
 
     <ProgressBar
         android:id="@+id/progress"

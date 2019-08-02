@@ -10,5 +10,8 @@
     <string name="gallery_no_pictures_label">You have no pictures yet :(</string>
     <string name="gallery_first_picture_label">Take your first one; GO!</string>
     <string name="gallery_pictures_could_not_retrieved">Pictures could not be retrieve</string>
+    <string name="camera_upload_successful">Successfully uploaded</string>
+    <string name="camera_permissions_not_granted">Permissions not granted by the user.</string>
+    <string name="camera_take_picture_button_label">¡Cheers!</string>
 
 </resources>

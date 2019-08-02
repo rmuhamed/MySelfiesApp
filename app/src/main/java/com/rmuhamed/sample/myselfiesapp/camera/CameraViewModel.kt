@@ -2,47 +2,29 @@ package com.rmuhamed.sample.myselfiesapp.camera
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.rmuhamed.sample.myselfiesapp.api.RetrofitController
-import com.rmuhamed.sample.myselfiesapp.api.dto.BasicResponseDTO
-import com.rmuhamed.sample.myselfiesapp.api.dto.UploadImageRequestDTO
-import com.rmuhamed.sample.myselfiesapp.api.dto.UploadedImageDTO
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import com.rmuhamed.sample.myselfiesapp.repository.CameraRepository
 import java.io.File
 import java.util.*
 
-class CameraViewModel : ViewModel() {
+class CameraViewModel(private val repo: CameraRepository) : ViewModel() {
     val uploading = MutableLiveData<Boolean>()
+    val errorLiveData = MutableLiveData<String?>()
+    val successLiveData = MutableLiveData<Boolean?>()
 
-    init {
-        RetrofitController.get()
-    }
-
-    fun upload(albumId: String, accessToken: String, file: File) {
+    fun doUpload(file: File, name: String, title: String, description: String) {
         uploading.value = true
 
-        val dto = UploadImageRequestDTO(
-            Base64.getEncoder().encodeToString(file.readBytes()),
-            albumId,
-            "image",
-            "Picture",
-            "A Picture",
-            "A description"
+        val base64 = Base64.getEncoder().encodeToString(file.readBytes())
+
+        repo.upload(name, title, description, base64,
+            onError = {
+                uploading.postValue(false)
+                errorLiveData.postValue(it)
+            },
+            onSuccess = {
+                uploading.postValue(false)
+                successLiveData.postValue(true)
+            }
         )
-
-        RetrofitController.imgurAPI.uploadPhoto("Bearer $accessToken", dto).enqueue(object :
-            Callback<BasicResponseDTO<UploadedImageDTO>> {
-            override fun onFailure(call: Call<BasicResponseDTO<UploadedImageDTO>>, t: Throwable) {
-                uploading.postValue(false)
-            }
-
-            override fun onResponse(
-                call: Call<BasicResponseDTO<UploadedImageDTO>>,
-                response: Response<BasicResponseDTO<UploadedImageDTO>>
-            ) {
-                uploading.postValue(false)
-            }
-        })
     }
 }
