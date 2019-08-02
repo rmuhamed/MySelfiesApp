@@ -7,11 +7,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
-import com.rmuhamed.sample.myselfiesapp.ACCESS_TOKEN
-import com.rmuhamed.sample.myselfiesapp.R
-import com.rmuhamed.sample.myselfiesapp.USER_NAME
+import com.rmuhamed.sample.myselfiesapp.*
+import com.rmuhamed.sample.myselfiesapp.album.CreateAlbumFragment
 import com.rmuhamed.sample.myselfiesapp.camera.CameraActivity
-import com.rmuhamed.sample.myselfiesapp.getViewModel
 import com.rmuhamed.sample.myselfiesapp.repository.GalleryRepository
 import kotlinx.android.synthetic.main.activity_gallery.*
 
@@ -60,36 +58,23 @@ class GalleryActivity : AppCompatActivity() {
 
         gallery_take_new_picture_button.setOnClickListener {
             if (!viewModel.existsAnAlbum()) {
-                //TODO: RM - Show Dialog with two fields
+                showBottomSheetDialog { CreateAlbumFragment.newInstance(accessToken) }
             } else {
                 this@GalleryActivity.takeNewPicture(
-                    albumId = viewModel.albumId,
+                    albumId = viewModel.albumId!!,
                     accessToken = accessToken!!
                 )
             }
         }
-
-        viewModel.albumNotCreatedLiveData.observe(this, Observer {
-            it?.let {
-                Snackbar.make(gallery_pictures, it, BaseTransientBottomBar.LENGTH_SHORT).show()
-                progress.visibility = View.GONE
-            }
-        })
-
-        viewModel.albumCreationLiveData.observe(this, Observer {
-            it?.let {
-                this@GalleryActivity.takeNewPicture(albumId = it, accessToken = accessToken!!)
-            }
-        })
     }
 
     private fun takeNewPicture(albumId: String, accessToken: String) {
-        this@GalleryActivity.startActivity(
+        launchActivity {
             Intent().apply {
                 setClass(this@GalleryActivity, CameraActivity::class.java)
-                putExtra("ALBUM_ID", albumId)
-                putExtra("ACCESS_TOKEN", accessToken)
+                putExtra(ALBUM_ID, albumId)
+                putExtra(ACCESS_TOKEN, accessToken)
             }
-        )
+        }
     }
 }

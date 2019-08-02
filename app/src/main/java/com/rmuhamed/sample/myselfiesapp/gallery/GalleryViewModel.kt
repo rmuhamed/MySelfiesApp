@@ -8,14 +8,11 @@ import com.rmuhamed.sample.myselfiesapp.repository.GalleryRepository
 
 
 class GalleryViewModel(val repo: GalleryRepository) : ViewModel() {
-
-    val albumCreationLiveData = MutableLiveData<String?>(null)
-    val albumNotCreatedLiveData = MutableLiveData<String?>(null)
     val photosRetrievedLiveData = MutableLiveData<List<ImageDTO>?>(null)
     val photosNotRetrievedLiveData = MutableLiveData(false)
     val errorLiveData = MutableLiveData<String?>(null)
 
-    lateinit var albumId: String
+    var albumId: String? = null
 
     init {
         RetrofitController.get()
@@ -26,8 +23,12 @@ class GalleryViewModel(val repo: GalleryRepository) : ViewModel() {
         repo.getAlbums(
             onError = { errorLiveData.postValue(it) },
             onSuccess = {
-                albumId = it[0].id
-                getPicturesBy(albumId = albumId)
+                if (it.isNotEmpty()) {
+                    albumId = it[0].id
+                    getPicturesBy(albumId = albumId!!)
+                } else {
+                    albumId = ""
+                }
             }
         )
     }
@@ -39,13 +40,5 @@ class GalleryViewModel(val repo: GalleryRepository) : ViewModel() {
         )
     }
 
-    fun existsAnAlbum() = albumId.isNotBlank()
-
-    fun createAlbum(title: String, description: String) {
-        repo.createAlbum(title,
-            description,
-            onError = { albumNotCreatedLiveData.postValue(it) },
-            onSuccess = { albumCreationLiveData.postValue(it) }
-        )
-    }
+    fun existsAnAlbum() = albumId?.isNotBlank() ?: false
 }
