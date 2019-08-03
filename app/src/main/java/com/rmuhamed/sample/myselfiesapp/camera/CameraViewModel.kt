@@ -1,10 +1,10 @@
 package com.rmuhamed.sample.myselfiesapp.camera
 
+import android.util.Base64
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.rmuhamed.sample.myselfiesapp.repository.CameraRepository
 import java.io.File
-import java.util.*
 
 class CameraViewModel(private val repo: CameraRepository) : ViewModel() {
     val uploading = MutableLiveData<Boolean>()
@@ -14,9 +14,10 @@ class CameraViewModel(private val repo: CameraRepository) : ViewModel() {
     fun doUpload(file: File, name: String, title: String, description: String) {
         uploading.value = true
 
-        val base64 = Base64.getEncoder().encodeToString(file.readBytes())
+        val encodedImage = Base64.encodeToString(file.readBytes(), Base64.DEFAULT)
 
-        repo.upload(name, title, description, base64,
+        repo.upload(
+            name, title, description, encodedImage,
             onError = {
                 uploading.postValue(false)
                 errorLiveData.postValue(it)
