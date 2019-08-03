@@ -27,6 +27,14 @@ android {
 
     flavorDimensions "tier"
 
+    lintOptions {
+        abortOnError false
+        ignoreWarnings false
+        checkAllWarnings true
+        htmlReport true
+        lintConfig file("lint-config.xml")
+    }
+
     buildTypes {
         debug {
             debuggable true
