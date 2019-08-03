@@ -22,18 +22,9 @@ android {
         buildConfigField "String", "API_CLIENT_ID", CLIENT_ID
         buildConfigField "String", "API_CLIENT_SECRET", CLIENT_SECRET
         buildConfigField "String", "API_REFRESH_TOKEN", REFRESH_TOKEN
-        buildConfigField "String", "ACCESS_TOKEN", ACCESS_TOKEN
     }
 
     flavorDimensions "tier"
-
-    lintOptions {
-        abortOnError false
-        ignoreWarnings false
-        checkAllWarnings true
-        htmlReport true
-        lintConfig file("lint-config.xml")
-    }
 
     buildTypes {
         debug {
@@ -71,8 +62,11 @@ android {
     }
 
     lintOptions {
-        disable 'RtlHardcoded', 'RtlCompat', 'RtlEnabled', 'ContentDescription', 'GoogleAppIndexingWarning'
-        check 'NewApi', 'InlinedApi'
+        abortOnError false
+        ignoreWarnings false
+        checkAllWarnings true
+        htmlReport true
+        lintConfig file("lint-config.xml")
     }
 }
 
