@@ -8,15 +8,15 @@
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/gallery_empty_image"
         android:layout_width="0dp"
-        android:layout_height="256dp"
+        android:layout_height="@dimen/view_size_256"
         android:scaleType="centerInside"
         android:visibility="gone"
         tools:visibility="visible"
+        android:layout_marginTop="@dimen/margin_32"
         android:src="@drawable/ic_gallery_no_pictures"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/gallery_empty_label"
@@ -36,6 +36,7 @@
         android:layout_height="0dp"
         android:padding="@dimen/margin_8"
         android:visibility="visible"
+        tools:visibility="gone"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
