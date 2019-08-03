@@ -28,6 +28,7 @@ class GalleryViewModel(val repo: GalleryRepository) : ViewModel() {
                     getPicturesBy(albumId = albumId!!)
                 } else {
                     albumId = ""
+                    photosRetrievedLiveData.postValue(emptyList())
                 }
             }
         )

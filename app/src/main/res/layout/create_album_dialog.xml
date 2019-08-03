@@ -25,6 +25,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/margin_16"
         android:layout_marginTop="@dimen/margin_24"
+        app:boxStrokeColor="@color/colorPrimaryDark"
+        app:hintTextColor="@color/colorPrimaryDark"
         android:hint="@string/create_album_title_hint_text"
         android:textSize="@dimen/text_size_16"
         app:errorEnabled="false"
@@ -35,6 +37,7 @@
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="@null"
             android:inputType="textEmailAddress" />
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -46,6 +49,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/margin_16"
         android:layout_marginTop="@dimen/margin_24"
+        app:hintTextColor="@color/colorPrimaryDark"
+        app:boxStrokeColor="@color/colorPrimaryDark"
         android:hint="@string/create_album_description_hint_text"
         android:textSize="@dimen/text_size_16"
         app:errorEnabled="false"
@@ -56,6 +61,7 @@
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="@null"
             android:inputType="textEmailAddress" />
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -66,7 +72,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_8"
+        android:textColor="@color/colorPrimaryDark"
         android:text="@string/create_album_button_label"
+        app:strokeColor="@color/colorPrimaryDark"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/create_album_description_input_textField" />
 
