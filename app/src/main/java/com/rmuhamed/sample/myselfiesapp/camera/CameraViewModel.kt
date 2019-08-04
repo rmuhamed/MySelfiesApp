@@ -1,31 +1,53 @@
 package com.rmuhamed.sample.myselfiesapp.camera
 
 import android.util.Base64
+import androidx.camera.core.ImageCapture
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.rmuhamed.sample.myselfiesapp.repository.CameraRepository
 import java.io.File
 
 class CameraViewModel(private val repo: CameraRepository) : ViewModel() {
-    val uploading = MutableLiveData<Boolean>()
-    val errorLiveData = MutableLiveData<String?>()
-    val successLiveData = MutableLiveData<Boolean?>()
+    val uploadingLiveData = MutableLiveData<Boolean>()
+    val someErrorLiveData = MutableLiveData<String?>()
+    val uploadedLiveData = MutableLiveData<Boolean?>()
 
-    fun doUpload(file: File, name: String, title: String, description: String) {
-        uploading.value = true
+    val capturedPictureSucceed = MutableLiveData<File?>()
+
+    fun uploadPicture(file: File, name: String, title: String, description: String) {
+        uploadingLiveData.value = true
 
         val encodedImage = Base64.encodeToString(file.readBytes(), Base64.DEFAULT)
 
         repo.upload(
             name, title, description, encodedImage,
             onError = {
-                uploading.postValue(false)
-                errorLiveData.postValue(it)
+                uploadingLiveData.postValue(false)
+                someErrorLiveData.postValue(it)
             },
             onSuccess = {
-                uploading.postValue(false)
-                successLiveData.postValue(true)
+                uploadingLiveData.postValue(false)
+                uploadedLiveData.postValue(true)
             }
         )
+    }
+
+    fun captureNewPicture(imageCapture: ImageCapture, albumId: String, timeStamp: Long, root: File) {
+        val fileName = "${albumId + '_' + timeStamp}.jpg"
+        val pictureFile = File(root, fileName)
+
+        imageCapture.takePicture(pictureFile,
+            object : ImageCapture.OnImageSavedListener {
+                override fun onError(
+                    error: ImageCapture.UseCaseError,
+                    message: String, exc: Throwable?
+                ) {
+                    someErrorLiveData.postValue("Photo capture failed: $message")
+                }
+
+                override fun onImageSaved(file: File) {
+                    capturedPictureSucceed.postValue(file)
+                }
+            })
     }
 }

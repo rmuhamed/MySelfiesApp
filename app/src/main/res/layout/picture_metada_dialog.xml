@@ -7,32 +7,32 @@
     android:padding="@dimen/margin_16">
 
     <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/create_album_title_label"
+        android:id="@+id/picture_metadata_title_label"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/margin_4"
-        android:text="@string/create_album_title_label"
-        android:textColor="@color/colorPrimary"
+        android:text="@string/picture_metadata_title_label"
+        android:textColor="@color/colorPrimaryDark"
         android:textSize="@dimen/text_size_20"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/create_album_title_input_textField"
+        android:id="@+id/picture_name_input_textField"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/margin_16"
         android:layout_marginTop="@dimen/margin_24"
-        app:boxStrokeColor="@color/colorPrimaryDark"
-        app:hintTextColor="@color/colorPrimaryDark"
-        android:hint="@string/create_album_title_hint_text"
+        app:boxStrokeColor="@color/colorPrimary"
+        app:hintTextColor="@color/colorPrimary"
+        android:hint="@string/picture_metadata_name_hint_label"
         android:textSize="@dimen/text_size_16"
         app:errorEnabled="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/create_album_title_label">
+        app:layout_constraintTop_toBottomOf="@id/picture_metadata_title_label">
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
@@ -42,20 +42,44 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/create_album_description_input_textField"
+        android:id="@+id/picture_metadata_title_input_textField"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/margin_16"
         android:layout_marginTop="@dimen/margin_24"
-        app:hintTextColor="@color/colorPrimaryDark"
-        app:boxStrokeColor="@color/colorPrimaryDark"
-        android:hint="@string/create_album_description_hint_text"
+        app:hintTextColor="@color/colorPrimary"
+        app:boxStrokeColor="@color/colorPrimary"
+        android:hint="@string/picture_metadata_title_hint_label"
         android:textSize="@dimen/text_size_16"
         app:errorEnabled="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/create_album_title_input_textField">
+        app:layout_constraintTop_toBottomOf="@id/picture_name_input_textField">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@null" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/picture_metadata_description_input_field"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_16"
+        android:layout_marginTop="@dimen/margin_24"
+        app:hintTextColor="@color/colorPrimary"
+        app:boxStrokeColor="@color/colorPrimary"
+        android:hint="@string/picture_metadata_description_hint_label"
+        android:textSize="@dimen/text_size_16"
+        app:errorEnabled="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/picture_metadata_title_input_textField">
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
@@ -65,15 +89,15 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/create_album_button"
+        android:id="@+id/picture_metadata_upload_button"
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_8"
-        android:textColor="@color/colorPrimaryDark"
-        android:text="@string/create_album_button_label"
-        app:strokeColor="@color/colorPrimaryDark"
+        android:textColor="@color/colorAccent"
+        android:text="@string/picture_metadata_upload_button_label"
+        app:strokeColor="@color/colorAccent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/create_album_description_input_textField" />
+        app:layout_constraintTop_toBottomOf="@id/picture_metadata_description_input_field" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

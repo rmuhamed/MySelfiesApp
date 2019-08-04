@@ -2,13 +2,10 @@ package com.rmuhamed.sample.myselfiesapp.camera
 
 import android.graphics.Matrix
 import android.os.Bundle
-import android.util.Rational
-import android.util.Size
 import android.view.Surface
 import android.view.TextureView
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.*
 import androidx.core.app.ActivityCompat
@@ -18,13 +15,11 @@ import com.google.android.material.snackbar.Snackbar
 import com.rmuhamed.sample.myselfiesapp.*
 import com.rmuhamed.sample.myselfiesapp.R
 import com.rmuhamed.sample.myselfiesapp.repository.CameraRepository
+import com.rmuhamed.sample.myselfiesapp.view.dialogForPictureMetadata
 import kotlinx.android.synthetic.main.activity_camera.*
-import java.io.File
 
 class CameraActivity : AppCompatActivity() {
     private lateinit var viewModel: CameraViewModel
-    private lateinit var imageCaptureConfig: ImageCaptureConfig
-    private lateinit var previewConfig: PreviewConfig
     private lateinit var viewFinder: TextureView
 
     private lateinit var imageCapture: ImageCapture
@@ -33,18 +28,15 @@ class CameraActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_camera)
 
-        viewFinder = findViewById(R.id.view_finder)
+        val albumId = intent.getStringExtra(ALBUM_ID) ?: ""
+        val accessToken = intent.getStringExtra(ACCESS_TOKEN) ?: ""
 
-        val albumId = intent.getStringExtra(ALBUM_ID)
-        val accessToken = intent.getStringExtra(ACCESS_TOKEN)
+        viewFinder = view_finder
 
         viewModel = getViewModel { CameraViewModel(CameraRepository(albumId, accessToken)) }
 
-        previewConfig = buildPreviewConfiguration()
-        imageCaptureConfig = buildImageCaptureConfiguration()
-
         if (allPermissionsGranted(CAMERA_PERMISSION)) {
-            viewFinder.post { initCamera(previewConfig, imageCaptureConfig) }
+            viewFinder.post { cameraInit(buildPreviewConfiguration(), buildImageCaptureConfiguration()) }
         } else {
             ActivityCompat.requestPermissions(
                 this,
@@ -53,17 +45,28 @@ class CameraActivity : AppCompatActivity() {
             )
         }
 
-        viewModel.uploading.observe(this, Observer {
+        viewModel.uploadingLiveData.observe(this, Observer {
             progress.visibility = if (it) View.VISIBLE else View.GONE
         })
 
-        viewModel.successLiveData.observe(this, Observer {
+        viewModel.uploadedLiveData.observe(this, Observer {
             Snackbar.make(capture_button, R.string.camera_upload_successful, LENGTH_SHORT).show()
+            this.finish()
         })
 
-        viewModel.errorLiveData.observe(this, Observer {
+        viewModel.someErrorLiveData.observe(this, Observer {
             it?.let {
                 Snackbar.make(capture_button, it, LENGTH_SHORT).show()
+            }
+        })
+
+        viewModel.capturedPictureSucceed.observe(this, Observer {
+            it?.let {
+                dialogForPictureMetadata(
+                    layoutId = R.layout.picture_metada_dialog,
+                    context = this,
+                    action = { name, title, description -> viewModel.uploadPicture(it, name, title, description) }
+                ).show()
             }
         })
 
@@ -73,34 +76,8 @@ class CameraActivity : AppCompatActivity() {
         }
 
         capture_button.setOnClickListener {
-            captureNewPicture()
+            viewModel.captureNewPicture(imageCapture, albumId, System.currentTimeMillis(), externalMediaDirs.first())
         }
-    }
-
-    private fun captureNewPicture() {
-        val file = File(
-            externalMediaDirs.first(),
-            "${System.currentTimeMillis()}.jpg"
-        )
-
-        imageCapture.takePicture(file,
-            object : ImageCapture.OnImageSavedListener {
-                override fun onError(
-                    error: ImageCapture.UseCaseError,
-                    message: String, exc: Throwable?
-                ) {
-                    val msg = "Photo capture failed: $message"
-                    Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
-                    exc?.printStackTrace()
-                }
-
-                override fun onImageSaved(file: File) {
-                    val msg = "Photo capture succeeded: ${file.absolutePath}"
-                    Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
-
-                    viewModel.doUpload(file, "Picture", "Title", "Description")
-                }
-            })
     }
 
     override fun onRequestPermissionsResult(
@@ -108,7 +85,7 @@ class CameraActivity : AppCompatActivity() {
     ) {
         if (requestCode == REQUEST_CODE_PERMISSIONS) {
             if (allPermissionsGranted(CAMERA_PERMISSION)) {
-                viewFinder.post { initCamera(previewConfig, imageCaptureConfig) }
+                viewFinder.post { cameraInit(buildPreviewConfiguration(), buildImageCaptureConfiguration()) }
             } else {
                 Snackbar.make(
                     capture_button,
@@ -120,7 +97,7 @@ class CameraActivity : AppCompatActivity() {
         }
     }
 
-    private fun initCamera(
+    private fun cameraInit(
         previewConfiguration: PreviewConfig,
         imageCaptureConfig: ImageCaptureConfig
     ) {
@@ -161,22 +138,5 @@ class CameraActivity : AppCompatActivity() {
         // Finally, apply transformations to our TextureView
         viewFinder.setTransform(matrix)
     }
-
-    private fun buildPreviewConfiguration(): PreviewConfig =
-        PreviewConfig.Builder()
-            .apply {
-                setLensFacing(CameraX.LensFacing.FRONT)
-                setTargetAspectRatio(Rational(1, 1))
-                setTargetResolution(Size(640, 640))
-            }.build()
-
-    private fun buildImageCaptureConfiguration(): ImageCaptureConfig =
-        ImageCaptureConfig.Builder()
-            .apply {
-                setTargetAspectRatio(Rational(1, 1))
-                setLensFacing(CameraX.LensFacing.FRONT)
-                setTargetResolution(Size(640, 640))
-                setCaptureMode(ImageCapture.CaptureMode.MIN_LATENCY)
-            }.build()
 }
 
