@@ -2,24 +2,24 @@ package com.rmuhamed.sample.myselfiesapp.gallery
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.rmuhamed.sample.myselfiesapp.api.RetrofitController
 import com.rmuhamed.sample.myselfiesapp.api.dto.ImageDTO
 import com.rmuhamed.sample.myselfiesapp.repository.GalleryRepository
 
 
-class GalleryViewModel(val repo: GalleryRepository) : ViewModel() {
+class GalleryViewModel(private val repo: GalleryRepository) : ViewModel() {
     val photosRetrievedLiveData = MutableLiveData<List<ImageDTO>?>(null)
     val photosNotRetrievedLiveData = MutableLiveData(false)
     val errorLiveData = MutableLiveData<String?>(null)
+    val loadingLiveData = MutableLiveData<Boolean?>()
 
     var albumId: String? = null
 
     init {
-        RetrofitController.get()
+        loadingLiveData.value = true
         getAlbums()
     }
 
-    fun getAlbums() {
+    private fun getAlbums() {
         repo.getAlbums(
             onError = { errorLiveData.postValue(it) },
             onSuccess = {
@@ -28,6 +28,7 @@ class GalleryViewModel(val repo: GalleryRepository) : ViewModel() {
                     getPicturesBy(albumId = albumId!!)
                 } else {
                     albumId = ""
+                    loadingLiveData.postValue(false)
                     photosRetrievedLiveData.postValue(emptyList())
                 }
             }
@@ -36,10 +37,20 @@ class GalleryViewModel(val repo: GalleryRepository) : ViewModel() {
 
     private fun getPicturesBy(albumId: String) {
         repo.getPictures(albumId,
-            onError = { photosNotRetrievedLiveData.postValue(true) },
-            onSuccess = { photosRetrievedLiveData.postValue(it) }
+            onError = {
+                loadingLiveData.postValue(false)
+                photosNotRetrievedLiveData.postValue(true)
+            },
+            onSuccess = {
+                loadingLiveData.postValue(false)
+                photosRetrievedLiveData.postValue(it)
+            }
         )
     }
 
     fun existsAnAlbum() = albumId?.isNotBlank() ?: false
+
+    fun restart() {
+        getAlbums()
+    }
 }

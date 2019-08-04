@@ -52,6 +52,8 @@ class LoginActivity : AppCompatActivity() {
                         putExtra("ACCESS_TOKEN", accessToken)
                         putExtra("USER_NAME", viewModel.userName)
                     })
+                //Should not be part of BackStack
+                this.finish()
             }
         })
 

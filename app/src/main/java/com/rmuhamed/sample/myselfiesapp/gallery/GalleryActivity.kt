@@ -14,6 +14,8 @@ import com.rmuhamed.sample.myselfiesapp.repository.GalleryRepository
 import kotlinx.android.synthetic.main.activity_gallery.*
 
 class GalleryActivity : AppCompatActivity() {
+    private lateinit var viewModel: GalleryViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_gallery)
@@ -21,18 +23,26 @@ class GalleryActivity : AppCompatActivity() {
         val accessToken = intent.getStringExtra(ACCESS_TOKEN)
         val userName = intent.getStringExtra(USER_NAME)
 
-        val viewModel = getViewModel { GalleryViewModel(GalleryRepository(accessToken, userName)) }
+        viewModel = getViewModel { GalleryViewModel(GalleryRepository(accessToken, userName)) }
+
+        viewModel.loadingLiveData.observe(this, Observer {
+            it?.let {
+                progress.visibility = if (it) View.VISIBLE else View.GONE
+            }
+        })
 
         viewModel.photosRetrievedLiveData.observe(this, Observer {
-            progress.visibility = View.GONE
             it?.let {
                 if (it.isEmpty()) {
                     gallery_empty_image.visibility = View.VISIBLE
                     gallery_empty_label.visibility = View.VISIBLE
+                    gallery_take_new_picture_button.setText(R.string.gallery_first_picture_label)
                 } else {
-                    gallery_pictures.visibility = View.VISIBLE
                     gallery_pictures.adapter = GalleryAdapter(images = it)
+                    gallery_take_new_picture_button.setText(R.string.gallery_another_picture_label)
                 }
+
+                gallery_take_new_picture_button.visibility = View.VISIBLE
             }
         })
 
@@ -66,6 +76,11 @@ class GalleryActivity : AppCompatActivity() {
                 )
             }
         }
+    }
+
+    override fun onRestart() {
+        super.onRestart()
+        viewModel.restart()
     }
 
     private fun takeNewPicture(albumId: String, accessToken: String) {
