@@ -6,6 +6,8 @@ apply plugin: 'kotlin-android-extensions'
 
 apply plugin: 'kotlin-kapt'
 
+apply from: '../dependencies.gradle'
+
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
@@ -71,31 +73,36 @@ android {
 }
 
 dependencies {
+    def uiDependencies = rootProject.ext.uiDependencies
+    def archDependencies = rootProject.ext.architectureComponentsDependencies
+    def networkDependencies = rootProject.ext.networkDependencies
+    def testDependencies = rootProject.ext.testDependencies
+    def kotlinDependencies = rootProject.ext.kotlinDependencies
+
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${kotlin_version}"
 
-    implementation "androidx.core:core-ktx:${ktx_version}"
-    implementation "androidx.appcompat:appcompat:${appcompatx_version}"
-    implementation "androidx.constraintlayout:constraintlayout:${constraintlayoutx_version}"
+    implementation kotlinDependencies.kotlin
 
-    implementation "androidx.lifecycle:lifecycle-extensions:${lifecycle_version}"
-    implementation "androidx.lifecycle:lifecycle-common-java8:${lifecycle_version}"
+    implementation uiDependencies.appCompat
+    implementation uiDependencies.constraintLayout
+    implementation uiDependencies.cameraX
+    implementation uiDependencies.cameraCore
+    implementation uiDependencies.materialComponents
+    implementation uiDependencies.glide
+    annotationProcessor uiDependencies.glideAnnotationProcessor
 
-    implementation "androidx.camera:camera-core:${camerax_version}"
-    implementation "androidx.camera:camera-camera2:${camerax_version}"
+    implementation archDependencies.corteKtx
+    implementation archDependencies.lifeCycleJava8
+    implementation archDependencies.lifeCycleExtensions
+    implementation archDependencies.corteKtx
 
-    implementation "com.google.android.material:material:${material_components_version}"
+    implementation networkDependencies.okHttp
+    implementation networkDependencies.httpLoggingInterceptor
+    implementation networkDependencies.gsonConverter
+    implementation networkDependencies.retrofit
 
-    implementation "com.squareup.retrofit2:retrofit:${retrofit_version}"
-    implementation "com.squareup.retrofit2:converter-gson:${retrofit_version}"
-    implementation "com.squareup.okhttp3:logging-interceptor:${logging_interceptor_version}"
-    implementation "com.squareup.okhttp3:okhttp:${okhttp_version}"
+    androidTestImplementation testDependencies.junitExtension
+    androidTestImplementation testDependencies.espresso
 
-    implementation "com.github.bumptech.glide:glide:${glide_version}"
-    annotationProcessor "com.github.bumptech.glide:compiler:${glide_version}"
-
-    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-
-    testImplementation 'junit:junit:4.12'
+    testImplementation testDependencies.junit
 }
