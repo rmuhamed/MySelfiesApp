@@ -1,6 +1,5 @@
 package com.rmuhamed.sample.myselfiesapp.login
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.rmuhamed.sample.myselfiesapp.repository.LoginRepository
@@ -40,7 +39,6 @@ class LoginViewModel(private val repo: LoginRepository) : ViewModel() {
     }
 
     private fun onErrorToBeNotified(message: String) {
-        Log.e(LoginViewModel::class.java.simpleName, message)
         loginInProgressLiveData.postValue(false)
         credentialsInvalidLiveData.postValue(true)
     }

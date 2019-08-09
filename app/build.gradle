@@ -70,6 +70,10 @@ android {
         htmlReport true
         lintConfig file("lint-config.xml")
     }
+
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
 }
 
 dependencies {
