@@ -11,7 +11,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class LoginRepository(val api: ImgurAPI) {
-    private var accessToken: String = ""
+    var accessToken: String = ""
 
     fun createToken(onError: (String) -> Unit, onSuccess: (Boolean) -> Unit) {
         val requestDTO =
@@ -27,8 +27,19 @@ class LoginRepository(val api: ImgurAPI) {
             }
 
             override fun onResponse(call: Call<TokenResponseDTO>, response: Response<TokenResponseDTO>) {
-                accessToken = response.body()?.access_token ?: ""
-                onSuccess.invoke(accessToken.isNotBlank())
+                response.body()?.let {
+                    if (it.access_token.isNotBlank()) {
+                        accessToken = it.access_token
+                        onSuccess.invoke(true)
+                    } else {
+                        onError.invoke("Some unknown error")
+                    }
+                } ?: run {
+                    val error = JSONObject(response.errorBody()!!.string())
+                    val message = error.optJSONObject("data")?.optString("error") ?: ""
+
+                    onError.invoke(message)
+                }
             }
         })
     }
@@ -50,7 +61,7 @@ class LoginRepository(val api: ImgurAPI) {
                         if (it.success) {
                             onSuccess.invoke(accessToken)
                         } else {
-                            onSuccess.invoke("")
+                            onError.invoke("Some unknown error")
                         }
                     } ?: run {
                         val error = JSONObject(response.errorBody()!!.string())

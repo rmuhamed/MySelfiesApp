@@ -30,10 +30,7 @@ class LoginViewModel(private val repo: LoginRepository) : ViewModel() {
 
     private fun checkAccountExistence() {
         repo.accountExists(userName,
-            onSuccess = {
-                loginInProgressLiveData.postValue(false)
-                loginSuccessfulLiveData.postValue(it)
-            },
+            onSuccess = { loginInProgressLiveData.postValue(false); loginSuccessfulLiveData.postValue(it) },
             onError = { onErrorToBeNotified(message = it) }
         )
     }

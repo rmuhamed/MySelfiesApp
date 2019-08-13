@@ -28,6 +28,9 @@ class LoginActivityTest {
         onView(withId(R.id.login_welcome_label))
             .check(matches(isDisplayed()))
 
+        onView(withId(R.id.login_username_input_textField))
+            .check(matches(isDisplayed()))
+
         onView(withId(R.id.login_sign_in_button))
             .check(matches(isDisplayed()))
     }
