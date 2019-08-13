@@ -9,6 +9,7 @@ import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import com.rmuhamed.sample.myselfiesapp.*
 import com.rmuhamed.sample.myselfiesapp.album.CreateAlbumFragment
+import com.rmuhamed.sample.myselfiesapp.api.RetrofitController
 import com.rmuhamed.sample.myselfiesapp.camera.CameraActivity
 import com.rmuhamed.sample.myselfiesapp.repository.GalleryRepository
 import kotlinx.android.synthetic.main.activity_gallery.*
@@ -23,7 +24,8 @@ class GalleryActivity : AppCompatActivity() {
         val accessToken = intent.getStringExtra(ACCESS_TOKEN)
         val userName = intent.getStringExtra(USER_NAME)
 
-        viewModel = getViewModel { GalleryViewModel(GalleryRepository(accessToken, userName)) }
+        viewModel =
+            getViewModel { GalleryViewModel(GalleryRepository(RetrofitController.imgurAPI, accessToken, userName)) }
 
         viewModel.loadingLiveData.observe(this, Observer {
             it?.let {

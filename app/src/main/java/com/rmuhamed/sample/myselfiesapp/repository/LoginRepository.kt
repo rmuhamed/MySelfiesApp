@@ -1,7 +1,7 @@
 package com.rmuhamed.sample.myselfiesapp.repository
 
 import com.rmuhamed.sample.myselfiesapp.BuildConfig
-import com.rmuhamed.sample.myselfiesapp.api.RetrofitController
+import com.rmuhamed.sample.myselfiesapp.api.ImgurAPI
 import com.rmuhamed.sample.myselfiesapp.api.dto.BasicResponseDTO
 import com.rmuhamed.sample.myselfiesapp.api.dto.TokenRequestDTO
 import com.rmuhamed.sample.myselfiesapp.api.dto.TokenResponseDTO
@@ -10,12 +10,8 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class LoginRepository() {
+class LoginRepository(val api: ImgurAPI) {
     private var accessToken: String = ""
-
-    init {
-        RetrofitController.get()
-    }
 
     fun createToken(onError: (String) -> Unit, onSuccess: (Boolean) -> Unit) {
         val requestDTO =
@@ -25,7 +21,7 @@ class LoginRepository() {
                 BuildConfig.API_CLIENT_SECRET
             )
 
-        RetrofitController.imgurAPI.createToken(requestDTO).enqueue(object : Callback<TokenResponseDTO> {
+        api.createToken(requestDTO).enqueue(object : Callback<TokenResponseDTO> {
             override fun onFailure(call: Call<TokenResponseDTO>, t: Throwable) {
                 onError.invoke(t.localizedMessage ?: "Unknown error")
             }
@@ -40,7 +36,7 @@ class LoginRepository() {
     fun accountExists(userName: String, onError: (String) -> Unit, onSuccess: (String) -> Unit) {
         val authorizationHeader = "Bearer $accessToken"
 
-        RetrofitController.imgurAPI.verifyAccount(authorizationHeader, userName)
+        api.verifyAccount(authorizationHeader, userName)
             .enqueue(object : Callback<BasicResponseDTO<Boolean>> {
                 override fun onFailure(call: Call<BasicResponseDTO<Boolean>>, t: Throwable) {
                     onError.invoke(t.localizedMessage ?: "Unknown error")

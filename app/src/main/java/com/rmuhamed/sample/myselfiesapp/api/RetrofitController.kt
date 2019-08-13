@@ -8,9 +8,9 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitController {
-    lateinit var imgurAPI: ImgurAPI
+    var imgurAPI: ImgurAPI
 
-    fun get() {
+    init {
         val httpLoggingInterceptor = HttpLoggingInterceptor()
         httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BODY;
 
@@ -30,4 +30,5 @@ object RetrofitController {
 
         imgurAPI = retrofit.create(ImgurAPI::class.java)
     }
+
 }
