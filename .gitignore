@@ -11,6 +11,8 @@
 /.idea/encodings.xml
 /.idea/gradle.xml
 /.idea/misc.xml
+/.idea/.gitignore
+/.idea/vcs.xml
 /.idea/runConfigurations.xml
 /.idea/navEditor.xml
 /.idea/assetWizardSettings.xml
