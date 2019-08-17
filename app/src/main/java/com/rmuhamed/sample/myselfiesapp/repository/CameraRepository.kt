@@ -1,6 +1,6 @@
 package com.rmuhamed.sample.myselfiesapp.repository
 
-import com.rmuhamed.sample.myselfiesapp.api.RetrofitController
+import com.rmuhamed.sample.myselfiesapp.api.ImgurAPI
 import com.rmuhamed.sample.myselfiesapp.api.dto.BasicResponseDTO
 import com.rmuhamed.sample.myselfiesapp.api.dto.UploadImageRequestDTO
 import com.rmuhamed.sample.myselfiesapp.api.dto.UploadedImageDTO
@@ -9,11 +9,11 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class CameraRepository(private val albumId: String? = "albumId", private val accessToken: String? = "accessToken") {
-
-    init {
-        RetrofitController.get()
-    }
+class CameraRepository(
+    val api: ImgurAPI,
+    private val albumId: String? = "albumId",
+    private val accessToken: String? = "accessToken"
+) {
 
     fun upload(
         name: String,
@@ -32,7 +32,7 @@ class CameraRepository(private val albumId: String? = "albumId", private val acc
             description
         )
 
-        RetrofitController.imgurAPI.uploadPhoto("Bearer $accessToken", dto).enqueue(object :
+        api.uploadPhoto("Bearer $accessToken", dto).enqueue(object :
             Callback<BasicResponseDTO<UploadedImageDTO>> {
             override fun onFailure(call: Call<BasicResponseDTO<UploadedImageDTO>>, t: Throwable) {
                 onError.invoke(t.localizedMessage ?: "Unknown error")

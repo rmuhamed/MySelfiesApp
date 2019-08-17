@@ -1,6 +1,6 @@
 package com.rmuhamed.sample.myselfiesapp.repository
 
-import com.rmuhamed.sample.myselfiesapp.api.RetrofitController
+import com.rmuhamed.sample.myselfiesapp.api.ImgurAPI
 import com.rmuhamed.sample.myselfiesapp.api.dto.AlbumDTO
 import com.rmuhamed.sample.myselfiesapp.api.dto.BasicResponseDTO
 import com.rmuhamed.sample.myselfiesapp.api.dto.ImageDTO
@@ -9,14 +9,10 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class GalleryRepository(val accessToken: String, val userName: String) {
-
-    init {
-        RetrofitController.get()
-    }
+class GalleryRepository(val api: ImgurAPI, val accessToken: String, val userName: String) {
 
     fun getAlbums(onError: (String) -> Unit, onSuccess: (List<AlbumDTO>) -> Unit) {
-        RetrofitController.imgurAPI.albumsBy("Bearer $accessToken", userName, 0).enqueue(object :
+        api.albumsBy("Bearer $accessToken", userName, 0).enqueue(object :
             Callback<BasicResponseDTO<List<AlbumDTO>>> {
             override fun onFailure(call: Call<BasicResponseDTO<List<AlbumDTO>>>, t: Throwable) {
                 onError.invoke(t.localizedMessage ?: "Unknown error")
@@ -42,7 +38,7 @@ class GalleryRepository(val accessToken: String, val userName: String) {
     }
 
     fun getPictures(albumId: String, onError: (String) -> Unit, onSuccess: (List<ImageDTO>) -> Unit) {
-        RetrofitController.imgurAPI.picturesBy("Bearer $accessToken", albumId).enqueue(object :
+        api.picturesBy("Bearer $accessToken", albumId).enqueue(object :
             Callback<BasicResponseDTO<List<ImageDTO>>> {
             override fun onFailure(call: Call<BasicResponseDTO<List<ImageDTO>>>, t: Throwable) {
                 onError.invoke(t.localizedMessage ?: "Unknown error")

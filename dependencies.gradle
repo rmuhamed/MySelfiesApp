@@ -12,6 +12,10 @@ rootProject.ext {
     junit_version = '4.12'
     espresso_version = '3.2.0'
     junit_extension_version = '1.1.1'
+    mockito_version = '3.0.0'
+    mockito_kotlin_version = '2.1.0'
+    testing_arch_core_version = '2.1.0-rc01'
+    testing_core_ktx_version = '1.2.0'
 
     uiDependencies = [
             cameraCore              : "androidx.camera:camera-core:${camerax_version}",
@@ -41,8 +45,12 @@ rootProject.ext {
     ]
 
     testDependencies = [
-            junitExtension: "androidx.test.ext:junit:${junit_extension_version}",
+            junitExtensionKTX: "androidx.test.ext:junit-ktx:${junit_extension_version}",
+            coreKTX: "androidx.test:core-ktx:${testing_core_ktx_version}",
             espresso: "androidx.test.espresso:espresso-core:${espresso_version}",
-            junit: "junit:junit:${junit_version}"
+            junit: "junit:junit:${junit_version}",
+            mockito: "org.mockito:mockito-core:${mockito_version}",
+            mockitoKotlin: "com.nhaarman.mockitokotlin2:mockito-kotlin:${mockito_kotlin_version}",
+            archCore: "androidx.arch.core:core-testing:${testing_arch_core_version}"
     ]
 }

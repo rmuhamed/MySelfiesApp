@@ -70,6 +70,10 @@ android {
         htmlReport true
         lintConfig file("lint-config.xml")
     }
+
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
 }
 
 dependencies {
@@ -100,8 +104,12 @@ dependencies {
     implementation networkDependencies.gsonConverter
     implementation networkDependencies.retrofit
 
-    androidTestImplementation testDependencies.junitExtension
+    androidTestImplementation testDependencies.junitExtensionKTX
+    androidTestImplementation testDependencies.coreKTX
     androidTestImplementation testDependencies.espresso
 
     testImplementation testDependencies.junit
+    testImplementation testDependencies.mockito
+    testImplementation testDependencies.mockitoKotlin
+    testImplementation testDependencies.archCore
 }

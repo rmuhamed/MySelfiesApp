@@ -10,6 +10,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import com.rmuhamed.sample.myselfiesapp.*
+import com.rmuhamed.sample.myselfiesapp.api.RetrofitController
 import com.rmuhamed.sample.myselfiesapp.camera.CameraActivity
 import com.rmuhamed.sample.myselfiesapp.repository.CreateAlbumRepository
 import kotlinx.android.synthetic.main.activity_gallery.*
@@ -35,7 +36,8 @@ class CreateAlbumFragment : BottomSheetDialogFragment() {
 
         accessToken = arguments?.getString(ACCESS_TOKEN) ?: ""
 
-        viewModel = getViewModel { CreateAlbumViewModel(CreateAlbumRepository(accessToken)) }
+        viewModel =
+            getViewModel { CreateAlbumViewModel(CreateAlbumRepository(RetrofitController.imgurAPI, accessToken)) }
     }
 
     override fun onCreateView(
