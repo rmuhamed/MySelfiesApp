@@ -13,7 +13,7 @@ class CameraRepository(
     val api: ImgurAPI,
     private val albumId: String? = "albumId",
     private val accessToken: String? = "accessToken"
-) {
+) : IRepository {
 
     fun upload(
         name: String,

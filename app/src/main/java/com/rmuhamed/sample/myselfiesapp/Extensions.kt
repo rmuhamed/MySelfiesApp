@@ -1,6 +1,7 @@
 package com.rmuhamed.sample.myselfiesapp
 
 import android.Manifest
+import android.app.Application
 import android.content.Intent
 import android.content.pm.PackageManager
 import androidx.annotation.IdRes
@@ -8,8 +9,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.rmuhamed.sample.myselfiesapp.repository.RepositoryFactory
 
 
 const val ALBUM_ID = "ALBUM_ID"
@@ -18,6 +21,13 @@ const val USER_NAME = "USER_NAME"
 const val REQUEST_CODE_PERMISSIONS = 10
 
 val CAMERA_PERMISSION = arrayOf(Manifest.permission.CAMERA)
+
+fun <T : ViewModel> AppCompatActivity.getViewModel(
+    modelClass: Class<T>,
+    application: Application,
+    repoType: RepositoryFactory.Type
+) =
+    ViewModelProvider(this, ApplicationViewModelFactory(application, repoType)).get(modelClass)
 
 inline fun <reified VM : ViewModel> AppCompatActivity.getViewModel(noinline creationFunctor: (() -> VM)?) =
     creationFunctor?.let {
