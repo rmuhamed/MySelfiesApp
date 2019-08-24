@@ -2,6 +2,7 @@ package com.rmuhamed.sample.myselfiesapp.login
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.rmuhamed.sample.myselfiesapp.model.AuthenticatedUser
 import com.rmuhamed.sample.myselfiesapp.repository.LoginRepository
 
 class LoginViewModel(private val repo: LoginRepository) : ViewModel() {
@@ -30,7 +31,11 @@ class LoginViewModel(private val repo: LoginRepository) : ViewModel() {
 
     private fun checkAccountExistence() {
         repo.accountExists(userName,
-            onSuccess = { loginInProgressLiveData.postValue(false); loginSuccessfulLiveData.postValue(it) },
+            onSuccess = {
+                repo.saveCredentials(AuthenticatedUser(accessToken = it, userName = userName))
+                loginInProgressLiveData.postValue(false);
+                loginSuccessfulLiveData.postValue(it)
+            },
             onError = { onErrorToBeNotified(message = it) }
         )
     }

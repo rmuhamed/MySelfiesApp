@@ -5,6 +5,7 @@ rootProject.ext {
     ktx_version = '1.2.0-alpha03'
     material_components_version = '1.1.0-alpha09'
     lifecycle_version = '2.2.0-alpha03'
+    room_version = '2.2.0-beta01'
     retrofit_version = '2.6.1'
     logging_interceptor_version = '4.1.0'
     okhttp_version = '4.1.0'
@@ -35,6 +36,11 @@ rootProject.ext {
     architectureComponentsDependencies = [
             lifeCycleJava8     : "androidx.lifecycle:lifecycle-common-java8:${lifecycle_version}",
             lifeCycleExtensions: "androidx.lifecycle:lifecycle-extensions:${lifecycle_version}"
+    ]
+
+    roomDependencies = [
+            roomRuntime: "androidx.room:room-runtime:${room_version}",
+            roomCompiler: "androidx.room:room-compiler:${room_version}"
     ]
 
     networkDependencies = [

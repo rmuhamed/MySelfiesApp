@@ -5,6 +5,7 @@ import com.nhaarman.mockitokotlin2.*
 import com.rmuhamed.sample.myselfiesapp.api.ImgurAPI
 import com.rmuhamed.sample.myselfiesapp.api.dto.BasicResponseDTO
 import com.rmuhamed.sample.myselfiesapp.api.dto.TokenResponseDTO
+import com.rmuhamed.sample.myselfiesapp.db.MySelfiesDatabase
 import com.rmuhamed.sample.myselfiesapp.repository.LoginRepository
 import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.Assert.*
@@ -22,9 +23,10 @@ class LoginViewModelTest {
     var rule: TestRule = InstantTaskExecutorRule()
 
     private val mockAPI = mock<ImgurAPI>()
+    private val mockDB = mock<MySelfiesDatabase>()
 
     private lateinit var viewModel: LoginViewModel
-    private val repo = LoginRepository(mockAPI)
+    private val repo = LoginRepository(mockAPI, mockDB)
 
     @Before
     fun setUp() {

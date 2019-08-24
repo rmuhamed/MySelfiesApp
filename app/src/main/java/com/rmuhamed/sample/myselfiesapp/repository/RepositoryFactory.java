@@ -13,7 +13,7 @@ public class RepositoryFactory {
         IRepository repo = null;
         switch (type) {
             case LOGIN:
-                repo = new LoginRepository(configuration.getApiDataSource());
+                repo = new LoginRepository(configuration.getApiDataSource(), configuration.getDBDataSource());
                 break;
             case GALLERY:
                 break;
