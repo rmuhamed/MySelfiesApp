@@ -9,7 +9,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class CreateAlbumRepository(val api: ImgurAPI, private val accessToken: String) {
+class CreateAlbumRepository(val api: ImgurAPI, private val accessToken: String) : IRepository {
 
     fun createAlbum(title: String, description: String, onError: (String) -> Unit, onSuccess: (String) -> Unit) {
         val requestDTO = CreateAlbumRequestDTO(title, description)

@@ -9,7 +9,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class GalleryRepository(val api: ImgurAPI, val accessToken: String, val userName: String) {
+class GalleryRepository(val api: ImgurAPI, val accessToken: String, val userName: String) : IRepository {
 
     fun getAlbums(onError: (String) -> Unit, onSuccess: (List<AlbumDTO>) -> Unit) {
         api.albumsBy("Bearer $accessToken", userName, 0).enqueue(object :

@@ -10,7 +10,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class LoginRepository(val api: ImgurAPI) {
+class LoginRepository(val api: ImgurAPI) : IRepository {
     var accessToken: String = ""
 
     fun createToken(onError: (String) -> Unit, onSuccess: (Boolean) -> Unit) {
