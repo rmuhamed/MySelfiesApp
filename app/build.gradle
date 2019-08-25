@@ -59,10 +59,17 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility 1.8
-        targetCompatibility 1.8
+        incremental true
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 
+    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+        kotlinOptions {
+            jvmTarget = JavaVersion.VERSION_1_8
+        }
+    }
+    
     lintOptions {
         abortOnError false
         ignoreWarnings false
@@ -94,7 +101,7 @@ dependencies {
     implementation uiDependencies.cameraCore
     implementation uiDependencies.materialComponents
     implementation uiDependencies.glide
-    annotationProcessor uiDependencies.glideAnnotationProcessor
+    kapt uiDependencies.glideAnnotationProcessor
 
     implementation archComponentsDependencies.lifeCycleJava8
     implementation archComponentsDependencies.lifeCycleExtensions
