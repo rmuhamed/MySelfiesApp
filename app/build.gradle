@@ -93,6 +93,8 @@ dependencies {
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.0-beta-3'
+
     implementation kotlinDependencies.kotlinStdLibJDK
     implementation kotlinDependencies.androidCoreKTX
 
