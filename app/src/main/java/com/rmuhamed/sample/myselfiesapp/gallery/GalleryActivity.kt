@@ -9,9 +9,8 @@ import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import com.rmuhamed.sample.myselfiesapp.*
 import com.rmuhamed.sample.myselfiesapp.album.CreateAlbumFragment
-import com.rmuhamed.sample.myselfiesapp.api.RetrofitController
 import com.rmuhamed.sample.myselfiesapp.camera.CameraActivity
-import com.rmuhamed.sample.myselfiesapp.repository.GalleryRepository
+import com.rmuhamed.sample.myselfiesapp.repository.RepositoryFactory
 import kotlinx.android.synthetic.main.activity_gallery.*
 
 class GalleryActivity : AppCompatActivity() {
@@ -21,11 +20,7 @@ class GalleryActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_gallery)
 
-        val accessToken = intent.getStringExtra(ACCESS_TOKEN)
-        val userName = intent.getStringExtra(USER_NAME)
-
-        viewModel =
-            getViewModel { GalleryViewModel(GalleryRepository(RetrofitController.imgurAPI, accessToken, userName)) }
+        viewModel = getViewModel(GalleryViewModel::class.java, application, RepositoryFactory.Type.GALLERY)
 
         viewModel.loadingLiveData.observe(this, Observer {
             it?.let {
@@ -70,11 +65,11 @@ class GalleryActivity : AppCompatActivity() {
 
         gallery_take_new_picture_button.setOnClickListener {
             if (!viewModel.existsAnAlbum()) {
-                showBottomSheetDialog { CreateAlbumFragment.newInstance(accessToken) }
+                showBottomSheetDialog { CreateAlbumFragment.newInstance("accessToken") }
             } else {
                 this@GalleryActivity.takeNewPicture(
                     albumId = viewModel.albumId!!,
-                    accessToken = accessToken!!
+                    accessToken = "accessToken!!" //TODO: RM - Change this later
                 )
             }
         }

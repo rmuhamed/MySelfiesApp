@@ -8,7 +8,7 @@ import com.rmuhamed.sample.myselfiesapp.repository.LoginRepository
 class LoginViewModel(private val repo: LoginRepository) : ViewModel() {
     val loginAvailableLiveData = MutableLiveData(false)
     val loginInProgressLiveData = MutableLiveData(false)
-    val loginSuccessfulLiveData = MutableLiveData("")
+    val loginSuccessfulLiveData = MutableLiveData<Boolean?>(null)
     val credentialsInvalidLiveData = MutableLiveData(false)
 
     var userName = ""
@@ -32,12 +32,17 @@ class LoginViewModel(private val repo: LoginRepository) : ViewModel() {
     private fun checkAccountExistence() {
         repo.accountExists(userName,
             onSuccess = {
-                repo.saveCredentials(AuthenticatedUser(accessToken = it, userName = userName))
-                loginInProgressLiveData.postValue(false);
-                loginSuccessfulLiveData.postValue(it)
+                val userLoggedIn = AuthenticatedUser(accessToken = it, userName = userName)
+                repo.saveCredentials(userLoggedIn)
+                onSuccessToBeNotified()
             },
             onError = { onErrorToBeNotified(message = it) }
         )
+    }
+
+    private fun onSuccessToBeNotified() {
+        loginInProgressLiveData.postValue(false);
+        loginSuccessfulLiveData.postValue(true)
     }
 
     private fun onErrorToBeNotified(message: String) {

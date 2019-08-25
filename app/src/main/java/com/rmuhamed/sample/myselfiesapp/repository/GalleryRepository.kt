@@ -4,14 +4,26 @@ import com.rmuhamed.sample.myselfiesapp.api.ImgurAPI
 import com.rmuhamed.sample.myselfiesapp.api.dto.AlbumDTO
 import com.rmuhamed.sample.myselfiesapp.api.dto.BasicResponseDTO
 import com.rmuhamed.sample.myselfiesapp.api.dto.ImageDTO
+import com.rmuhamed.sample.myselfiesapp.cache.CacheDataSource
+import com.rmuhamed.sample.myselfiesapp.cache.CacheDataSourceKeys
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class GalleryRepository(val api: ImgurAPI, val accessToken: String, val userName: String) : IRepository {
+class GalleryRepository(val api: ImgurAPI, private val cacheDataSource: CacheDataSource) :
+    BasicRepository(cacheDataSource) {
 
-    fun getAlbums(onError: (String) -> Unit, onSuccess: (List<AlbumDTO>) -> Unit) {
+    private val accessToken: String
+    private val userName: String
+
+    init {
+        val authenticatedUser = getAuthenticatedCustomer()
+        accessToken = authenticatedUser.accessToken
+        userName = authenticatedUser.userName
+    }
+
+    fun getAlbums(onError: (String) -> Unit, onNoAlbums: () -> Unit, onSuccess: (List<AlbumDTO>) -> Unit) {
         api.albumsBy("Bearer $accessToken", userName, 0).enqueue(object :
             Callback<BasicResponseDTO<List<AlbumDTO>>> {
             override fun onFailure(call: Call<BasicResponseDTO<List<AlbumDTO>>>, t: Throwable) {
@@ -23,8 +35,13 @@ class GalleryRepository(val api: ImgurAPI, val accessToken: String, val userName
                 response: Response<BasicResponseDTO<List<AlbumDTO>>>
             ) {
                 response.body()?.let {
-                    it.data?.let {
-                        onSuccess.invoke(it)
+                    it.data?.let { albums ->
+                        if (albums.isNullOrEmpty()) {
+                            onNoAlbums.invoke()
+                        } else {
+                            cacheDataSource.save(CacheDataSourceKeys.ALBUM_ID, albums[0].id)
+                            onSuccess.invoke(albums)
+                        }
                     } ?: run {
                         onError.invoke("No albums for this user")
                     }

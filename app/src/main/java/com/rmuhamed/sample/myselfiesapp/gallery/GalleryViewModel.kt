@@ -22,15 +22,14 @@ class GalleryViewModel(private val repo: GalleryRepository) : ViewModel() {
     private fun getAlbums() {
         repo.getAlbums(
             onError = { errorLiveData.postValue(it) },
+            onNoAlbums = {
+                albumId = ""
+                loadingLiveData.postValue(false)
+                photosRetrievedLiveData.postValue(emptyList())
+            },
             onSuccess = {
-                if (it.isNotEmpty()) {
-                    albumId = it[0].id
-                    getPicturesBy(albumId = albumId!!)
-                } else {
-                    albumId = ""
-                    loadingLiveData.postValue(false)
-                    photosRetrievedLiveData.postValue(emptyList())
-                }
+                albumId = it[0].id
+                getPicturesBy(albumId = albumId!!)
             }
         )
     }

@@ -44,13 +44,11 @@ class LoginActivity : AppCompatActivity() {
             }
         })
 
-        viewModel.loginSuccessfulLiveData.observe(this, Observer { accessToken ->
-            if (accessToken.isNotBlank()) {
+        viewModel.loginSuccessfulLiveData.observe(this, Observer {
+            it?.let {
                 this@LoginActivity.startActivity(
                     Intent().apply {
                         setClass(this@LoginActivity, GalleryActivity::class.java)
-                        putExtra("ACCESS_TOKEN", accessToken)
-                        putExtra("USER_NAME", viewModel.userName)
                     })
                 //Should not be part of BackStack
                 this.finish()

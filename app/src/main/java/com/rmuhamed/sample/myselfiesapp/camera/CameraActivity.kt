@@ -14,8 +14,7 @@ import com.google.android.material.snackbar.BaseTransientBottomBar.LENGTH_SHORT
 import com.google.android.material.snackbar.Snackbar
 import com.rmuhamed.sample.myselfiesapp.*
 import com.rmuhamed.sample.myselfiesapp.R
-import com.rmuhamed.sample.myselfiesapp.api.RetrofitController
-import com.rmuhamed.sample.myselfiesapp.repository.CameraRepository
+import com.rmuhamed.sample.myselfiesapp.repository.RepositoryFactory
 import com.rmuhamed.sample.myselfiesapp.view.dialogForPictureMetadata
 import kotlinx.android.synthetic.main.activity_camera.*
 
@@ -29,13 +28,10 @@ class CameraActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_camera)
 
-        val albumId = intent.getStringExtra(ALBUM_ID) ?: ""
-        val accessToken = intent.getStringExtra(ACCESS_TOKEN) ?: ""
-
         viewFinder = view_finder
 
         viewModel =
-            getViewModel { CameraViewModel(CameraRepository(RetrofitController.imgurAPI, albumId, accessToken)) }
+            getViewModel(CameraViewModel::class.java, application, RepositoryFactory.Type.CAMERA)
 
         if (allPermissionsGranted(CAMERA_PERMISSION)) {
             viewFinder.post { cameraInit(buildPreviewConfiguration(), buildImageCaptureConfiguration()) }
@@ -78,7 +74,7 @@ class CameraActivity : AppCompatActivity() {
         }
 
         capture_button.setOnClickListener {
-            viewModel.captureNewPicture(imageCapture, albumId, System.currentTimeMillis(), externalMediaDirs.first())
+            viewModel.captureNewPicture(imageCapture, System.currentTimeMillis(), externalMediaDirs.first())
         }
     }
 

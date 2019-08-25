@@ -10,7 +10,6 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.rmuhamed.sample.myselfiesapp.repository.RepositoryFactory
 
@@ -29,19 +28,12 @@ fun <T : ViewModel> AppCompatActivity.getViewModel(
 ) =
     ViewModelProvider(this, ApplicationViewModelFactory(application, repoType)).get(modelClass)
 
-inline fun <reified VM : ViewModel> AppCompatActivity.getViewModel(noinline creationFunctor: (() -> VM)?) =
-    creationFunctor?.let {
-        ViewModelProviders.of(this, CustomViewModelFactory(it)).get(VM::class.java)
-    } ?: run {
-        ViewModelProviders.of(this).get(VM::class.java)
-    }
-
-inline fun <reified VM : ViewModel> Fragment.getViewModel(noinline creationFunctor: (() -> VM)?) =
-    creationFunctor?.let {
-        ViewModelProviders.of(this, CustomViewModelFactory(it)).get(VM::class.java)
-    } ?: run {
-        ViewModelProviders.of(this).get(VM::class.java)
-    }
+fun <T : ViewModel> Fragment.getViewModel(
+    modelClass: Class<T>,
+    application: Application,
+    repoType: RepositoryFactory.Type
+) =
+    ViewModelProvider(this, ApplicationViewModelFactory(application, repoType)).get(modelClass)
 
 fun AppCompatActivity.allPermissionsGranted(permissions: Array<String>) =
     permissions.all {

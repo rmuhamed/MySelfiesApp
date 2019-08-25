@@ -6,8 +6,8 @@ import com.rmuhamed.sample.myselfiesapp.model.AuthenticatedUser
 @Dao
 interface AuthenticatedUsersDAO {
 
-    @Query("SELECT * From AuthenticatedUser WHERE accessToken = :accessToken")
-    fun retrieveUserBy(accessToken: String): AuthenticatedUser
+    @Query("SELECT * From AuthenticatedUser LIMIT 1")
+    fun retrieve(): AuthenticatedUser
 
     @Transaction
     fun setLoggedInUser(authenticatedUser: AuthenticatedUser) {

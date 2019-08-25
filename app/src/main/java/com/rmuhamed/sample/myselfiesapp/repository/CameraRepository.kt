@@ -1,19 +1,25 @@
 package com.rmuhamed.sample.myselfiesapp.repository
 
+import com.rmuhamed.sample.myselfiesapp.ALBUM_ID
 import com.rmuhamed.sample.myselfiesapp.api.ImgurAPI
 import com.rmuhamed.sample.myselfiesapp.api.dto.BasicResponseDTO
 import com.rmuhamed.sample.myselfiesapp.api.dto.UploadImageRequestDTO
 import com.rmuhamed.sample.myselfiesapp.api.dto.UploadedImageDTO
+import com.rmuhamed.sample.myselfiesapp.cache.CacheDataSource
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class CameraRepository(
-    val api: ImgurAPI,
-    private val albumId: String? = "albumId",
-    private val accessToken: String? = "accessToken"
-) : IRepository {
+    private val api: ImgurAPI,
+    private val cacheDataSource: CacheDataSource
+) : BasicRepository(cacheDataSource) {
+
+    private var accessToken: String = getAuthenticatedCustomer().accessToken
+    internal val albumId: String = getAlbumId()
+
+    private fun getAlbumId(): String = cacheDataSource.retrieve(ALBUM_ID) as String
 
     fun upload(
         name: String,
@@ -25,7 +31,7 @@ class CameraRepository(
     ) {
         val dto = UploadImageRequestDTO(
             base64,
-            albumId ?: "",
+            albumId,
             "image",
             name,
             title,

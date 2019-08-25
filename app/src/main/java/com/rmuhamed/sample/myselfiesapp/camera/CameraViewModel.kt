@@ -32,8 +32,8 @@ class CameraViewModel(private val repo: CameraRepository) : ViewModel() {
         )
     }
 
-    fun captureNewPicture(imageCapture: ImageCapture, albumId: String, timeStamp: Long, root: File) {
-        val fileName = "${albumId + '_' + timeStamp}.jpg"
+    fun captureNewPicture(imageCapture: ImageCapture, timeStamp: Long, root: File) {
+        val fileName = "${repo.albumId + '_' + timeStamp}.jpg"
         val pictureFile = File(root, fileName)
 
         imageCapture.takePicture(pictureFile,
