@@ -5,12 +5,21 @@ import com.rmuhamed.sample.myselfiesapp.api.ImgurAPI
 import com.rmuhamed.sample.myselfiesapp.api.dto.BasicResponseDTO
 import com.rmuhamed.sample.myselfiesapp.api.dto.TokenRequestDTO
 import com.rmuhamed.sample.myselfiesapp.api.dto.TokenResponseDTO
+import com.rmuhamed.sample.myselfiesapp.cache.CacheDataSource
+import com.rmuhamed.sample.myselfiesapp.cache.CacheDataSourceKeys
+import com.rmuhamed.sample.myselfiesapp.db.MySelfiesDatabase
+import com.rmuhamed.sample.myselfiesapp.extensions.ioThread
+import com.rmuhamed.sample.myselfiesapp.model.AuthenticatedUser
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class LoginRepository(val api: ImgurAPI) : IRepository {
+class LoginRepository(
+    private val api: ImgurAPI,
+    private val db: MySelfiesDatabase,
+    private val cache: CacheDataSource
+) : BasicRepository(cache) {
     var accessToken: String = ""
 
     fun createToken(onError: (String) -> Unit, onSuccess: (Boolean) -> Unit) {
@@ -71,5 +80,12 @@ class LoginRepository(val api: ImgurAPI) : IRepository {
                     }
                 }
             })
+    }
+
+    fun saveCredentials(authenticatedUser: AuthenticatedUser) {
+        cache.save(CacheDataSourceKeys.AUTHENTICATED_USER, authenticatedUser)
+        ioThread {
+            db.authenticatedUsersDao().setLoggedInUser(authenticatedUser)
+        }
     }
 }

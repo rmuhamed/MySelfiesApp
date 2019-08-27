@@ -1,3 +1,8 @@
 package com.rmuhamed.sample.myselfiesapp.repository
 
-interface IRepository
+import com.rmuhamed.sample.myselfiesapp.model.AuthenticatedUser
+
+interface IRepository {
+
+    fun getAuthenticatedCustomer(): AuthenticatedUser
+}

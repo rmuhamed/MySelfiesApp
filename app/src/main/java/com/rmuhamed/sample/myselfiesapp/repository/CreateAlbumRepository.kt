@@ -4,14 +4,19 @@ import com.rmuhamed.sample.myselfiesapp.api.ImgurAPI
 import com.rmuhamed.sample.myselfiesapp.api.dto.BasicResponseDTO
 import com.rmuhamed.sample.myselfiesapp.api.dto.CreateAlbumRequestDTO
 import com.rmuhamed.sample.myselfiesapp.api.dto.CreatedAlbumDTO
+import com.rmuhamed.sample.myselfiesapp.cache.CacheDataSource
+import com.rmuhamed.sample.myselfiesapp.cache.CacheDataSourceKeys
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class CreateAlbumRepository(val api: ImgurAPI, private val accessToken: String) : IRepository {
+class CreateAlbumRepository(val api: ImgurAPI, private val cacheDataSource: CacheDataSource) :
+    BasicRepository(cacheDataSource) {
 
-    fun createAlbum(title: String, description: String, onError: (String) -> Unit, onSuccess: (String) -> Unit) {
+    private var accessToken = getAuthenticatedCustomer().accessToken
+
+    fun createAlbum(title: String, description: String, onError: (String) -> Unit, onSuccess: () -> Unit) {
         val requestDTO = CreateAlbumRequestDTO(title, description)
         api.createAlbum("Bearer $accessToken", requestDTO).enqueue(object :
             Callback<BasicResponseDTO<CreatedAlbumDTO>> {
@@ -25,7 +30,8 @@ class CreateAlbumRepository(val api: ImgurAPI, private val accessToken: String) 
             ) {
                 response.body()?.let {
                     it.data?.let { dto ->
-                        onSuccess.invoke(dto.id)
+                        cacheDataSource.save(CacheDataSourceKeys.ALBUM_ID, dto.id)
+                        onSuccess.invoke()
                     }
                 } ?: run {
                     val error = JSONObject(response.errorBody()!!.string())

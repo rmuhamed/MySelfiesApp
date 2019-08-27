@@ -26,3 +26,4 @@
 .cxx
 # Project exclude paths
 /app/build/
+/app/schemas/

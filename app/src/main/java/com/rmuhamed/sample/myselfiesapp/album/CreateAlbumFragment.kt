@@ -9,10 +9,12 @@ import androidx.lifecycle.Observer
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
-import com.rmuhamed.sample.myselfiesapp.*
-import com.rmuhamed.sample.myselfiesapp.api.RetrofitController
+import com.rmuhamed.sample.myselfiesapp.ACCESS_TOKEN
+import com.rmuhamed.sample.myselfiesapp.R
 import com.rmuhamed.sample.myselfiesapp.camera.CameraActivity
-import com.rmuhamed.sample.myselfiesapp.repository.CreateAlbumRepository
+import com.rmuhamed.sample.myselfiesapp.getViewModel
+import com.rmuhamed.sample.myselfiesapp.launchActivity
+import com.rmuhamed.sample.myselfiesapp.repository.RepositoryFactory
 import kotlinx.android.synthetic.main.activity_gallery.*
 import kotlinx.android.synthetic.main.create_album_dialog.*
 
@@ -37,7 +39,7 @@ class CreateAlbumFragment : BottomSheetDialogFragment() {
         accessToken = arguments?.getString(ACCESS_TOKEN) ?: ""
 
         viewModel =
-            getViewModel { CreateAlbumViewModel(CreateAlbumRepository(RetrofitController.imgurAPI, accessToken)) }
+            getViewModel(CreateAlbumViewModel::class.java, activity!!.application, RepositoryFactory.Type.ALBUM)
     }
 
     override fun onCreateView(
@@ -66,17 +68,15 @@ class CreateAlbumFragment : BottomSheetDialogFragment() {
 
         viewModel.albumCreationLiveData.observe(viewLifecycleOwner, Observer {
             it?.let {
-                takeFirstPicture(it, accessToken)
+                takeFirstPicture()
             }
         })
     }
 
-    private fun takeFirstPicture(albumId: String, accessToken: String) {
+    private fun takeFirstPicture() {
         launchActivity {
             Intent().apply {
                 setClass(this@CreateAlbumFragment.context!!, CameraActivity::class.java)
-                putExtra(ALBUM_ID, albumId)
-                putExtra(ACCESS_TOKEN, accessToken)
             }
         }
     }

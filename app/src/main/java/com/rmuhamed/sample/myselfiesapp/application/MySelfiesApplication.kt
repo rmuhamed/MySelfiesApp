@@ -9,6 +9,6 @@ class MySelfiesApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        configuration = Configuration()
+        configuration = Configuration(this.applicationContext)
     }
 }
