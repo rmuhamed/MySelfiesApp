@@ -2,10 +2,14 @@ package com.rmuhamed.sample.myselfiesapp.camera
 
 import android.util.Base64
 import androidx.camera.core.ImageCapture
+import androidx.camera.core.ImageCaptureException
+import androidx.camera.core.ImageProxy
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.rmuhamed.sample.myselfiesapp.repository.CameraRepository
 import java.io.File
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 
 class CameraViewModel(private val repo: CameraRepository) : ViewModel() {
     val uploadingLiveData = MutableLiveData<Boolean>()
@@ -36,18 +40,19 @@ class CameraViewModel(private val repo: CameraRepository) : ViewModel() {
         val fileName = "${repo.albumId + '_' + timeStamp}.jpg"
         val pictureFile = File(root, fileName)
 
-        imageCapture.takePicture(pictureFile,
-            object : ImageCapture.OnImageSavedListener {
-                override fun onError(
-                    error: ImageCapture.UseCaseError,
-                    message: String, exc: Throwable?
-                ) {
-                    someErrorLiveData.postValue("Photo capture failed: $message")
-                }
 
-                override fun onImageSaved(file: File) {
-                    capturedPictureSucceed.postValue(file)
-                }
-            })
+        val outputFileOptions = ImageCapture.OutputFileOptions.Builder(pictureFile)
+            .build()
+
+        imageCapture.takePicture(outputFileOptions, Executors.newSingleThreadExecutor(), object : ImageCapture.OnImageSavedCallback {
+
+            override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
+                capturedPictureSucceed.postValue(File(requireNotNull(outputFileResults.savedUri!!.path)))
+            }
+
+            override fun onError(exception: ImageCaptureException) {
+                someErrorLiveData.postValue("Photo capture failed: ${exception.localizedMessage}")
+            }
+        })
     }
 }
